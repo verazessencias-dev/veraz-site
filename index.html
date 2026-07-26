@@ -148,6 +148,18 @@
   .cep-result{margin-top:10px; font-size:12.5px; color:#5b4a38; background:var(--cream-deep); border-radius:10px; padding:10px 12px; display:none;}
   .correios-official-link{display:block; text-align:center; margin-top:12px; font-size:12.5px; color:var(--gold-deep); font-weight:600; text-decoration:underline;}
   .correios-official-link:hover{color:var(--wine);}
+  .ship-options-label{font-size:12px; font-weight:700; color:#5b4a38; margin-bottom:8px;}
+  .ship-options-list{display:flex; flex-direction:column; gap:8px;}
+  .ship-option{
+    display:flex; align-items:center; gap:10px; padding:10px 12px;
+    border:1.5px solid var(--line); border-radius:12px; cursor:pointer;
+    background:#fff; transition:border-color .2s ease, background .2s ease;
+  }
+  .ship-option:has(input:checked){border-color:var(--gold); background:rgba(201,151,43,0.06);}
+  .ship-option input{accent-color:var(--gold-strong);}
+  .ship-option-name{flex:1; font-size:13px; font-weight:600; color:var(--ink);}
+  .ship-option-time{font-size:11.5px; color:#8a7b64;}
+  .ship-option-price{font-size:13.5px; font-weight:700; color:var(--gold-strong);}
   .cep-result.show{display:block;}
   .cep-error{color:var(--wine);}
   .cep-input-row{display:flex; gap:8px; margin-top:12px;}
@@ -951,9 +963,6 @@
               <button class="btn-gold" id="cepCalcBtn">Calcular</button>
             </div>
             <div class="cep-result" id="cepResult"></div>
-            <a href="https://www2.correios.com.br/sistemas/precosPrazos/prazos.cfm" target="_blank" rel="noopener" class="correios-official-link">
-              Conferir valor exato no site oficial dos Correios ↗
-            </a>
           </div>
         </div>
 
@@ -1342,7 +1351,19 @@
     resultBox.classList.add('show');
     resultBox.scrollIntoView({behavior:'smooth', block:'center'});
 
-    // 1ª tentativa: frete real via Melhor Envio (proxy pelo Apps Script)
+    // 1ª tentativa: frete real via Melhor Envio (Netlify Function, token seguro no servidor)
+    try{
+      const res = await fetch(`/.netlify/functions/frete?cep=${raw}`);
+      const data = await res.json();
+      if(data.options && data.options.length > 0){
+        renderShippingOptions(data.options, resultBox);
+        return;
+      }
+    }catch(err){
+      console.error('Melhor Envio (Netlify Function) indisponível, tentando alternativa:', err);
+    }
+
+    // 2ª tentativa: proxy antigo via Google Apps Script, se configurado
     if(CONFIG.sheetsUrl){
       try{
         const res = await fetch(`${CONFIG.sheetsUrl}?action=frete&cep=${raw}`);
@@ -1357,11 +1378,11 @@
           return;
         }
       }catch(err){
-        console.error('Melhor Envio indisponível, usando estimativa:', err);
+        console.error('Apps Script indisponível, usando estimativa:', err);
       }
     }
 
-    // 2ª tentativa (reserva): tabela de estimativa por região, caso o frete real falhe
+    // 3ª tentativa (reserva final): tabela de estimativa por região
     try{
       const res = await fetch(`https://viacep.com.br/ws/${raw}/json/`);
       const data = await res.json();
@@ -1383,6 +1404,36 @@
       resultBox.innerHTML = '<span class="cep-error">Não foi possível calcular agora. Tenta de novo em instantes.</span>';
       console.error('CEP error:', err);
     }
+  }
+
+  // Mostra as opções reais retornadas pelo Melhor Envio (SEDEX, PAC etc.) pro cliente escolher
+  function renderShippingOptions(options, resultBox){
+    resultBox.innerHTML = `
+      <div class="ship-options-label">Escolha a modalidade de envio:</div>
+      <div class="ship-options-list">
+        ${options.map((o, i) => `
+          <label class="ship-option">
+            <input type="radio" name="shipOption" value="${i}" ${i===0 ? 'checked' : ''}>
+            <span class="ship-option-name">${o.company} ${o.service}</span>
+            <span class="ship-option-time">até ${o.deliveryTime} dias úteis</span>
+            <span class="ship-option-price">${fmt(o.price)}</span>
+          </label>
+        `).join('')}
+      </div>
+    `;
+    resultBox.querySelectorAll('input[name="shipOption"]').forEach(radio=>{
+      radio.addEventListener('change', ()=>{
+        applyShippingOption(options[parseInt(radio.value,10)]);
+      });
+    });
+    applyShippingOption(options[0]);
+  }
+
+  function applyShippingOption(opt){
+    cartShipPrice = opt.price;
+    cartShipNote = `Prazo estimado: até ${opt.deliveryTime} dias úteis.`;
+    cartShipLabel = `${opt.company} ${opt.service}`;
+    updateCartTotal();
   }
 
   function cartShippingPrice(){ return cartShipMode === 'retirada' ? 0 : cartShipPrice; }
