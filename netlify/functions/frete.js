@@ -67,7 +67,7 @@ exports.handler = async function (event) {
     }
 
     const options = data
-      .filter((o) => !o.error && o.price)
+      .filter((o) => !o.error && o.price && o.company && o.company.name === "Correios")
       .map((o) => ({
         service: o.name,
         company: o.company && o.company.name,
