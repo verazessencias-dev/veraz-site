@@ -359,14 +359,14 @@
   .store-banner-visual{
     display:flex; align-items:center; justify-content:center;
     background:radial-gradient(circle at 50% 40%, rgba(201,151,43,0.18), transparent 70%);
-    border-radius:24px; padding:40px; position:relative;
+    border-radius:24px; padding:24px; position:relative;
   }
-  .store-banner-visual svg{width:200px; height:auto; color:var(--gold-deep); filter:drop-shadow(0 12px 30px rgba(140,106,46,0.28));}
+  .store-banner-visual img{width:100%; max-width:320px; height:auto; border-radius:16px; filter:drop-shadow(0 20px 40px rgba(140,106,46,0.35));}
   @media (max-width:860px){
     .store-banner-inner{grid-template-columns:1fr; text-align:center;}
     .store-banner p{margin-left:auto; margin-right:auto;}
-    .store-banner-visual{order:-1; padding:20px;}
-    .store-banner-visual svg{width:140px;}
+    .store-banner-visual{order:-1; padding:16px;}
+    .store-banner-visual img{max-width:240px;}
   }
 
   /* ============ MAIS DA VERAZ (abas) ============ */
@@ -671,21 +671,7 @@
       <a href="#essencias" class="btn-gold">Ver Catálogo</a>
     </div>
     <div class="store-banner-visual">
-      <svg viewBox="340 115 175 415"><g fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M 410 470 C 405 430 402 400 408 375 C 412 358 420 350 450 350 C 480 350 488 358 492 375 C 498 400 495 430 490 470 C 493 495 493 515 450 518 C 407 515 407 495 410 470 Z"/>
-        <path d="M 435 350 C 433 335 433 322 435 312 L 465 312 C 467 322 467 335 465 350"/>
-        <path d="M 428 312 C 428 300 430 292 450 292 C 470 292 472 300 472 312"/>
-        <line x1="428" y1="300" x2="472" y2="300"/>
-        <path d="M 415 460 C 430 466 470 466 485 460" opacity="0.55"/>
-        <path d="M 450 292 C 448 265 430 250 410 235 C 388 219 380 195 392 172 C 402 152 425 145 445 155 C 462 163 468 182 458 198 C 450 210 434 212 428 200 C 423 190 430 180 440 183 C 448 185 450 194 444 198"/>
-        <path d="M 410 235 C 392 232 378 240 372 256 C 367 270 374 284 388 286 C 400 288 409 279 406 267 C 404 259 396 256 391 262"/>
-        <path d="M 392 172 C 375 168 362 175 358 190 C 355 202 363 213 375 213 C 385 213 391 205 388 196"/>
-        <path d="M 445 155 C 452 138 470 130 486 138 C 500 145 504 161 494 172 C 486 180 474 178 473 167"/>
-        <path d="M 415 250 C 405 258 400 270 405 280"/>
-        <path d="M 468 190 C 478 195 484 205 480 216"/>
-      </g>
-      <circle cx="440" cy="199" r="4" fill="currentColor"/>
-      <circle cx="493" cy="155" r="3" fill="currentColor"/></svg>
+      <img src="frasco-real.jpg" alt="Frasco VERAZ Presença, inspirado em Coco Mademoiselle">
     </div>
   </div>
 </section>
