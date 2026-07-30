@@ -307,7 +307,7 @@
   .card .price-row{margin-top:12px; display:flex; flex-direction:column; align-items:center; gap:2px;}
   .card .price-old{font-size:13px; color:#a89a84; text-decoration:line-through;}
   .card .price-main{font-family:var(--font-display); font-weight:700; font-size:24px; color:var(--gold-strong);}
-  .card .price-decant{font-size:12px; color:#8a7b64;}
+  .card .price-decant{font-size:15px; color:var(--gold-strong); font-weight:700;}
   .card .buy-btn{
     margin-top:18px; width:100%; padding:12px; border-radius:12px;
     background:var(--ink); color:var(--cream); font-weight:600; font-size:13.5px; letter-spacing:0.3px;
@@ -337,6 +337,22 @@
     gap:10px; color:rgba(251,243,228,0.5); font-size:13px; text-align:center; padding:20px; overflow:hidden;
   }
   .fd-photo-slot.has-image{border:none; background:none; padding:0;}
+  .fd-photo-col{display:flex; flex-direction:column; gap:16px;}
+  .fd-message{
+    font-family:var(--font-display); font-style:italic; font-weight:600;
+    font-size:16px; color:rgba(251,243,228,0.88); line-height:1.5; text-align:center;
+    padding:0 6px;
+  }
+  .fd-club-invite{
+    aspect-ratio:4/5; border-radius:18px; padding:32px 26px;
+    background:linear-gradient(160deg, rgba(232,184,75,0.14), rgba(232,184,75,0.03));
+    border:1.5px solid rgba(232,184,75,0.35);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:12px;
+  }
+  .fd-club-invite .eyebrow{font-size:12px; letter-spacing:3px; color:var(--gold-bright); font-weight:800;}
+  .fd-club-invite h3{font-family:var(--font-display); font-size:clamp(24px,3vw,30px); font-weight:700; color:var(--cream); line-height:1.2;}
+  .fd-club-invite p{font-size:14px; color:rgba(251,243,228,0.75); max-width:260px;}
+  .fd-club-invite .btn-gold{margin-top:6px;}
 
   /* ============ LOJA VIRTUAL BANNER ============ */
   .store-banner{
@@ -755,12 +771,17 @@
       <h1>Kit Dia dos Pais</h1>
       <p class="fd-sub">Duas essências, uma caixa só — pensado para presentear sem complicação.</p>
       <div class="fd-photos">
-        <div class="fd-photo-slot has-image" id="fdPhotoFather">
-          <img src="foto-dia-dos-pais.jpeg" alt="Feliz Dia dos Pais - VERAZ Essencias">
+        <div class="fd-photo-col">
+          <div class="fd-photo-slot has-image" id="fdPhotoFather">
+            <img src="foto-dia-dos-pais.jpeg" alt="Feliz Dia dos Pais - VERAZ Essencias">
+          </div>
+          <p class="fd-message">"A VERAZ deseja a todos os pais um Feliz Dia dos Pais."</p>
         </div>
-        <div class="fd-photo-slot" id="fdPhotoKit">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M3 8l2-4h14l2 4"/><path d="M12 8v13"/></svg>
-          <span>Foto do kit aberto<br>(aguardando envio)</span>
+        <div class="fd-club-invite">
+          <span class="eyebrow">FIDELIDADE</span>
+          <h3>Entre para o<br>Clube VERAZ</h3>
+          <p>Compre, indique e ganhe — sua presença vale pontos.</p>
+          <button class="btn-gold" id="fdClubBtn" type="button">Conhecer o Clube</button>
         </div>
       </div>
     </div>
@@ -1037,6 +1058,7 @@
     return `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(text)}`;
   }
   document.getElementById('navWpp').href = wppLink("Oi! Vim pelo site da VERAZ e queria saber mais sobre as essências.");
+  document.getElementById('fdClubBtn').addEventListener('click', ()=> switchMvTab('clube'));
   document.getElementById('contactWpp').href = wppLink("Oi! Vim pelo site da VERAZ e queria uma ajuda pra escolher a essência certa.");
   document.getElementById('floatWpp').href = wppLink("Oi! Vim pelo site da VERAZ e queria saber mais sobre as essências.");
   document.querySelectorAll('.fd-btn').forEach(btn => {
