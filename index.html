@@ -839,7 +839,7 @@
       </div>
     </div>
 
-    <div class="mv-panel" data-panel="clube">
+    <div class="mv-panel" data-panel="clube" id="mvPanelClube">
 
     <div class="section-head">
       <span class="eyebrow">FIDELIDADE</span>
@@ -1058,7 +1058,10 @@
     return `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(text)}`;
   }
   document.getElementById('navWpp').href = wppLink("Oi! Vim pelo site da VERAZ e queria saber mais sobre as essências.");
-  document.getElementById('fdClubBtn').addEventListener('click', ()=> switchMvTab('clube'));
+  document.getElementById('fdClubBtn').addEventListener('click', ()=>{
+    switchMvTab('clube');
+    document.getElementById('mvPanelClube').scrollIntoView({behavior:'smooth', block:'start'});
+  });
   document.getElementById('contactWpp').href = wppLink("Oi! Vim pelo site da VERAZ e queria uma ajuda pra escolher a essência certa.");
   document.getElementById('floatWpp').href = wppLink("Oi! Vim pelo site da VERAZ e queria saber mais sobre as essências.");
   document.querySelectorAll('.fd-btn').forEach(btn => {
