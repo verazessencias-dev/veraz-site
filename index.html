@@ -280,15 +280,15 @@
   .card:hover{transform:translateY(-6px); box-shadow:0 20px 40px rgba(27,18,10,0.12);}
   .card-icon{width:56px; height:auto; margin:0 auto 18px; color:var(--ink-soft); transition:color .3s ease;}
   .card-photo-frame{
-    width:130px; height:130px; margin:0 auto 16px; border-radius:12px; overflow:hidden;
-    filter:drop-shadow(0 8px 16px rgba(140,106,46,0.3));
+    width:100%; height:190px; margin:0 auto 16px;
+    display:flex; align-items:center; justify-content:center;
   }
   .card-photo{
-    width:100%; height:100%; object-fit:cover; object-position:center 32%;
-    transform:scale(1.9); transform-origin:center 32%;
+    max-width:100%; max-height:100%; width:auto; height:100%; object-fit:contain;
+    filter:drop-shadow(0 10px 18px rgba(140,106,46,0.28));
     transition:transform .3s ease;
   }
-  .card:hover .card-photo{transform:scale(2.05);}
+  .card:hover .card-photo{transform:translateY(-4px) scale(1.03);}
   .card.feminino .card-icon{color:var(--blush);}
   .card.masculino .card-icon{color:var(--gold-deep);}
   .card:hover .card-icon{color:var(--gold);}
@@ -652,16 +652,16 @@
   };
 
   const PRODUCTS = [
-    {insp:"Coco Mademoiselle", nome:"Presença",  linha:"feminino",  foto:"frasco-real.jpeg", blurb:"Autoridade silenciosa. Sofisticação que não precisa gritar.", precoOriginal:129.90, preco:99.90,  decantOriginal:14.90, decant:12.90, notas:{topo:"Laranja, Bergamota", coracao:"Jasmim, Rosa, Mimosa", fundo:"Patchouli, Baunilha, Vetiver"}},
-    {insp:"Scandal",           nome:"Ousadia",    linha:"feminino",  blurb:"Sedução confiante, energia que enche a sala.",                precoOriginal:129.90, preco:99.90,  decantOriginal:14.90, decant:12.90, notas:{topo:"Laranja Sanguínea, Gardênia", coracao:"Mel, Jasmim", fundo:"Patchouli, Pralinê"}},
-    {insp:"Good Girl",         nome:"Dualidade",  linha:"feminino",  blurb:"Doce por fora, implacável por dentro.",                       precoOriginal:139.90, preco:109.90, decantOriginal:16.90, decant:13.90, notas:{topo:"Tuberosa, Jasmim Sambac", coracao:"Café, Amêndoa", fundo:"Fava Tonka, Cacau"}},
-    {insp:"Chloé",             nome:"Romance",    linha:"feminino",  blurb:"Feminilidade romântica, leveza que fica no ar.",              precoOriginal:119.90, preco:89.90,  decantOriginal:13.90, decant:11.90, notas:{topo:"Peônia, Lichia, Fresia", coracao:"Rosa, Magnólia", fundo:"Âmbar, Almíscar, Cedro"}},
-    {insp:"Olympéa",           nome:"Magnética",  linha:"feminino",  blurb:"Sensualidade moderna, presença marcante à noite.",            precoOriginal:139.90, preco:109.90, decantOriginal:16.90, decant:13.90, notas:{topo:"Tangerina, Flor de Gengibre", coracao:"Jasmim, Baunilha Salgada", fundo:"Âmbar Cinza, Cashmere Wood"}},
-    {insp:"212 VIP Black",     nome:"Noturno",    linha:"masculino", blurb:"Domínio. Presença forte onde a noite começa.",                precoOriginal:129.90, preco:99.90,  decantOriginal:14.90, decant:12.90, notas:{topo:"Café, Açafrão", coracao:"Tabaco, Conhaque", fundo:"Couro, Âmbar"}},
-    {insp:"Sauvage",           nome:"Liberdade",  linha:"masculino", blurb:"Versátil. Do trabalho ao fim de semana, sem esforço.",        precoOriginal:119.90, preco:89.90,  decantOriginal:13.90, decant:11.90, notas:{topo:"Bergamota da Calábria", coracao:"Pimenta de Sichuan, Lavanda", fundo:"Ambroxan, Cedro"}},
-    {insp:"Hugo Boss",         nome:"Executivo",  linha:"masculino", blurb:"Tradição e confiança pra antes de qualquer reunião.",         precoOriginal:109.90, preco:84.90,  decantOriginal:14.90, decant:12.90, notas:{topo:"Maçã, Ameixa", coracao:"Canela, Gerânio", fundo:"Sândalo, Baunilha, Cedro"}},
-    {insp:"Acqua di Gio",      nome:"Oceano",     linha:"masculino", blurb:"Frescor, energia, verão o ano inteiro.",                      precoOriginal:109.90, preco:84.90,  decantOriginal:14.90, decant:12.90, notas:{topo:"Notas Marinhas, Bergamota", coracao:"Jasmim, Calone, Alecrim", fundo:"Almíscar Branco, Cedro, Patchouli"}},
-    {insp:"Creed Aventus",     nome:"Império",    linha:"masculino", blurb:"Poder e conquista. Presença de quem lidera.",                 precoOriginal:159.90, preco:119.90, decantOriginal:18.90, decant:14.90, notas:{topo:"Abacaxi, Cassis, Bergamota", coracao:"Bétula, Patchouli, Jasmim", fundo:"Almíscar, Musgo de Carvalho, Âmbar Cinza"}},
+    {insp:"Coco Mademoiselle", nome:"Presença",  linha:"feminino",  foto:"etiqueta-mademoiselle.png", blurb:"Autoridade silenciosa. Sofisticação que não precisa gritar.", precoOriginal:129.90, preco:99.90,  decantOriginal:14.90, decant:12.90, notas:{topo:"Laranja, Bergamota", coracao:"Jasmim, Rosa, Mimosa", fundo:"Patchouli, Baunilha, Vetiver"}},
+    {insp:"Scandal",           nome:"Ousadia",    linha:"feminino",  foto:"etiqueta-escandalo.png", blurb:"Sedução confiante, energia que enche a sala.",                precoOriginal:129.90, preco:99.90,  decantOriginal:14.90, decant:12.90, notas:{topo:"Laranja Sanguínea, Gardênia", coracao:"Mel, Jasmim", fundo:"Patchouli, Pralinê"}},
+    {insp:"Good Girl",         nome:"Dualidade",  linha:"feminino",  foto:"etiqueta-menina-boa.png", blurb:"Doce por fora, implacável por dentro.",                       precoOriginal:139.90, preco:109.90, decantOriginal:16.90, decant:13.90, notas:{topo:"Tuberosa, Jasmim Sambac", coracao:"Café, Amêndoa", fundo:"Fava Tonka, Cacau"}},
+    {insp:"Chloé",             nome:"Romance",    linha:"feminino",  foto:"etiqueta-cloe.png", blurb:"Feminilidade romântica, leveza que fica no ar.",              precoOriginal:119.90, preco:89.90,  decantOriginal:13.90, decant:11.90, notas:{topo:"Peônia, Lichia, Fresia", coracao:"Rosa, Magnólia", fundo:"Âmbar, Almíscar, Cedro"}},
+    {insp:"Olympéa",           nome:"Magnética",  linha:"feminino",  foto:"etiqueta-olimpia.png", blurb:"Sensualidade moderna, presença marcante à noite.",            precoOriginal:139.90, preco:109.90, decantOriginal:16.90, decant:13.90, notas:{topo:"Tangerina, Flor de Gengibre", coracao:"Jasmim, Baunilha Salgada", fundo:"Âmbar Cinza, Cashmere Wood"}},
+    {insp:"212 VIP Black",     nome:"Noturno",    linha:"masculino", foto:"etiqueta-212-vip-preto.png", blurb:"Domínio. Presença forte onde a noite começa.",                precoOriginal:129.90, preco:99.90,  decantOriginal:14.90, decant:12.90, notas:{topo:"Café, Açafrão", coracao:"Tabaco, Conhaque", fundo:"Couro, Âmbar"}},
+    {insp:"Sauvage",           nome:"Liberdade",  linha:"masculino", foto:"etiqueta-selvagem.png", blurb:"Versátil. Do trabalho ao fim de semana, sem esforço.",        precoOriginal:119.90, preco:89.90,  decantOriginal:13.90, decant:11.90, notas:{topo:"Bergamota da Calábria", coracao:"Pimenta de Sichuan, Lavanda", fundo:"Ambroxan, Cedro"}},
+    {insp:"Hugo Boss",         nome:"Executivo",  linha:"masculino", foto:"etiqueta-chefe.png", blurb:"Tradição e confiança pra antes de qualquer reunião.",         precoOriginal:109.90, preco:84.90,  decantOriginal:14.90, decant:12.90, notas:{topo:"Maçã, Ameixa", coracao:"Canela, Gerânio", fundo:"Sândalo, Baunilha, Cedro"}},
+    {insp:"Acqua di Gio",      nome:"Oceano",     linha:"masculino", foto:"etiqueta-agua-marinha.png", blurb:"Frescor, energia, verão o ano inteiro.",                      precoOriginal:109.90, preco:84.90,  decantOriginal:14.90, decant:12.90, notas:{topo:"Notas Marinhas, Bergamota", coracao:"Jasmim, Calone, Alecrim", fundo:"Almíscar Branco, Cedro, Patchouli"}},
+    {insp:"Creed Aventus",     nome:"Império",    linha:"masculino", foto:"etiqueta-legado.png", blurb:"Poder e conquista. Presença de quem lidera.",                 precoOriginal:159.90, preco:119.90, decantOriginal:18.90, decant:14.90, notas:{topo:"Abacaxi, Cassis, Bergamota", coracao:"Bétula, Patchouli, Jasmim", fundo:"Almíscar, Musgo de Carvalho, Âmbar Cinza"}},
   ];
 </script>
 
