@@ -48,8 +48,6 @@
   .launch-bar{
     position:relative; overflow:hidden;
     background:linear-gradient(90deg, var(--gold-deep), var(--gold-bright), var(--gold), var(--gold-bright), var(--gold-deep));
-    background-size:300% 100%;
-    animation:shimmerBar 5s linear infinite;
     color:var(--ink); text-align:center; font-size:12.5px; font-weight:800; letter-spacing:1.2px;
     text-transform:uppercase;
     padding:11px 16px;
@@ -67,16 +65,10 @@
     .launch-bar .dot{width:16px; height:16px;}
   }
   .launch-bar .dot{width:7px; height:7px; border-radius:50%; background:var(--ink); flex-shrink:0; animation:pulseDot 1.4s ease-in-out infinite;}
-  .launch-bar .spark{position:absolute; width:4px; height:4px; border-radius:50%; background:#fff; opacity:0;}
-  .launch-bar .spark:nth-child(3){top:20%; left:18%; animation:barSpark 2.4s ease-in-out infinite;}
-  .launch-bar .spark:nth-child(4){top:65%; left:38%; animation:barSpark 2.4s ease-in-out 0.6s infinite;}
-  .launch-bar .spark:nth-child(5){top:30%; left:64%; animation:barSpark 2.4s ease-in-out 1.2s infinite;}
-  .launch-bar .spark:nth-child(6){top:70%; left:84%; animation:barSpark 2.4s ease-in-out 1.8s infinite;}
-  @keyframes barSpark{0%,100%{opacity:0; transform:scale(0.4);} 50%{opacity:1; transform:scale(1.4);}}
   @keyframes shimmerBar{0%{background-position:0% 50%;} 100%{background-position:300% 50%;}}
 
   .sparkle-field{position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:0;}
-  .sparkle-field .s{position:absolute; border-radius:50%; opacity:0; animation:ambientTwinkle 3s ease-in-out infinite;}
+  .sparkle-field .s{position:absolute; border-radius:50%; opacity:0.35;}
   .sparkle-field.light .s{background:var(--gold);}
   .sparkle-field.dark .s{background:#fff;}
   @keyframes ambientTwinkle{0%,100%{opacity:0; transform:scale(0.3);} 50%{opacity:1; transform:scale(1);}}
@@ -352,7 +344,6 @@
     font-family:var(--font-display); font-weight:900; margin-top:6px;
     font-size:clamp(48px, 9vw, 100px); line-height:0.98; letter-spacing:1px;
     background:linear-gradient(135deg, var(--gold-bright) 10%, #fff 40%, var(--gold-bright) 70%);
-    background-size:220% 100%; animation:shimmerBar 6s linear infinite;
     -webkit-background-clip:text; background-clip:text; color:transparent;
     filter:drop-shadow(0 0 30px rgba(232,184,75,0.35));
   }
@@ -666,7 +657,6 @@
 
 
 <div class="launch-bar">
-  <span class="spark"></span><span class="spark"></span><span class="spark"></span><span class="spark"></span>
   <span class="dot"></span>VERAZ CHEGOU — PREÇO DE LANÇAMENTO NAS 10 ESSÊNCIAS
 </div>
 
