@@ -100,7 +100,7 @@
   .nav-inner{display:flex; align-items:center; justify-content:space-between; height:76px;}
   .nav-logo{display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:700; font-size:22px; letter-spacing:1px;}
   .nav-logo svg{width:22px; height:auto; color:var(--gold-deep);}
-  .nav-links{display:flex; gap:34px; font-size:17px; font-weight:600; letter-spacing:0.3px;}
+  .nav-links{display:none;}
   .nav-links a{position:relative; padding:4px 0;}
   .nav-links a::after{content:'';position:absolute;left:0;bottom:0;width:0;height:1.5px;background:var(--gold);transition:width .25s ease;}
   .nav-links a:hover::after{width:100%;}
@@ -155,7 +155,7 @@
   .cep-input-row input{flex:1; padding:10px 12px; border-radius:10px; border:1.5px solid var(--line); font-size:14px; font-family:var(--font-body);}
   .cep-input-row button{padding:10px 16px; font-size:13px; white-space:nowrap;}
 
-  .nav-toggle{display:none; padding:6px; color:var(--ink); flex-shrink:0;}
+  .nav-toggle{display:flex; align-items:center; justify-content:center; padding:6px; color:var(--ink); flex-shrink:0;}
 
   .drawer-backdrop{
     position:fixed; inset:0; background:rgba(27,18,10,0.5); backdrop-filter:blur(2px);
