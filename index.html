@@ -155,11 +155,39 @@
   .cep-input-row input{flex:1; padding:10px 12px; border-radius:10px; border:1.5px solid var(--line); font-size:14px; font-family:var(--font-body);}
   .cep-input-row button{padding:10px 16px; font-size:13px; white-space:nowrap;}
 
-  .nav-toggle{display:none; font-size:26px; background:none;}
+  .nav-toggle{display:none; padding:6px; color:var(--ink); flex-shrink:0;}
+
+  .drawer-backdrop{
+    position:fixed; inset:0; background:rgba(27,18,10,0.5); backdrop-filter:blur(2px);
+    z-index:200; display:none; opacity:0; transition:opacity .25s ease;
+  }
+  .drawer-backdrop.open{display:block; opacity:1;}
+  .drawer{
+    position:fixed; top:0; left:0; bottom:0; width:78%; max-width:320px;
+    background:var(--cream); z-index:201;
+    display:flex; flex-direction:column;
+    transform:translateX(-100%); transition:transform .3s ease;
+    box-shadow:8px 0 30px rgba(0,0,0,0.2);
+  }
+  .drawer-backdrop.open .drawer{transform:translateX(0);}
+  .drawer-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:22px 22px 18px; border-bottom:1px solid var(--line);
+  }
+  .drawer-logo{font-family:var(--font-display); font-weight:700; font-size:21px; letter-spacing:1px;}
+  .drawer-close{font-size:26px; color:#8a7b64; line-height:1; padding:4px;}
+  .drawer-link{
+    display:block; padding:16px 22px; font-size:16px; font-weight:600; color:var(--ink-soft);
+    border-bottom:1px solid var(--line);
+  }
+  .drawer-link:active{background:rgba(201,151,43,0.08);}
+  .drawer-wpp{color:#1a7a4c; font-weight:700; margin-top:8px; border-bottom:none;}
 
   @media (max-width:760px){
     .nav-links{display:none;}
     .nav-inner{gap:12px;}
+    .nav-toggle{display:flex; align-items:center; justify-content:center;}
+    .nav-cta .btn-wpp{display:none;}
   }
 
   .hero{
@@ -662,6 +690,9 @@
 
 <header class="nav">
   <div class="container nav-inner">
+    <button class="nav-toggle" id="navToggle" aria-label="Abrir menu">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
     <div class="nav-logo">
       <svg viewBox="340 115 175 415"><g fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
       <path d="M 410 470 C 405 430 402 400 408 375 C 412 358 420 350 450 350 C 480 350 488 358 492 375 C 498 400 495 430 490 470 C 493 495 493 515 450 518 C 407 515 407 495 410 470 Z"/>
@@ -700,6 +731,22 @@
     </div>
   </div>
 </header>
+
+<div class="drawer-backdrop" id="drawerBackdrop">
+  <nav class="drawer" id="drawer">
+    <div class="drawer-head">
+      <div class="drawer-logo">VERAZ</div>
+      <button class="drawer-close" id="drawerClose" aria-label="Fechar menu">&times;</button>
+    </div>
+    <a href="#essencias" class="drawer-link">Essências</a>
+    <a href="#diadospais" class="drawer-link">Dia dos Pais</a>
+    <a href="#sobre" class="drawer-link">Sobre</a>
+    <a href="#decants" class="drawer-link">Testers</a>
+    <a href="#clube" class="drawer-link">Clube VERAZ</a>
+    <a href="#contato" class="drawer-link">Contato</a>
+    <a href="#" class="drawer-link drawer-wpp" id="drawerWpp">Falar no WhatsApp</a>
+  </nav>
+</div>
 
 <section class="store-banner">
   <div class="container store-banner-inner">
@@ -1071,6 +1118,17 @@
     return `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(text)}`;
   }
   document.getElementById('navWpp').href = wppLink("Oi! Vim pelo site da VERAZ e queria saber mais sobre as essências.");
+  document.getElementById('drawerWpp').href = wppLink("Oi! Vim pelo site da VERAZ e queria saber mais sobre as essências.");
+
+  const drawerBackdrop = document.getElementById('drawerBackdrop');
+  function openDrawer(){ drawerBackdrop.classList.add('open'); }
+  function closeDrawer(){ drawerBackdrop.classList.remove('open'); }
+  document.getElementById('navToggle').addEventListener('click', openDrawer);
+  document.getElementById('drawerClose').addEventListener('click', closeDrawer);
+  drawerBackdrop.addEventListener('click', (e)=>{ if(e.target === drawerBackdrop) closeDrawer(); });
+  document.querySelectorAll('.drawer-link').forEach(link=>{
+    link.addEventListener('click', closeDrawer);
+  });
   document.getElementById('contactWpp').href = wppLink("Oi! Vim pelo site da VERAZ e queria uma ajuda pra escolher a essência certa.");
   document.getElementById('floatWpp').href = wppLink("Oi! Vim pelo site da VERAZ e queria saber mais sobre as essências.");
   document.querySelectorAll('.fd-btn').forEach(btn => {
