@@ -620,9 +620,21 @@
   }
   .wpp-float:hover{transform:translateY(-3px) scale(1.05); box-shadow:0 12px 28px rgba(0,0,0,0.34);}
   .wpp-float svg{width:30px; height:30px;}
+  .ig-float{
+    position:fixed; bottom:94px; right:24px; z-index:90;
+    width:58px; height:58px; border-radius:50%;
+    background:radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 8px 22px rgba(0,0,0,0.28);
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .ig-float:hover{transform:translateY(-3px) scale(1.05); box-shadow:0 12px 28px rgba(0,0,0,0.34);}
+  .ig-float svg{width:28px; height:28px;}
   @media (max-width:600px){
     .wpp-float{bottom:18px; right:18px; width:52px; height:52px;}
     .wpp-float svg{width:27px; height:27px;}
+    .ig-float{bottom:80px; right:18px; width:52px; height:52px;}
+    .ig-float svg{width:25px; height:25px;}
   }
 
   @media (max-width:760px){
@@ -1106,6 +1118,14 @@
   </div>
 </div>
 
+<a class="ig-float" id="floatIg" href="https://instagram.com/verazessencias" target="_blank" rel="noopener" aria-label="Seguir no Instagram">
+  <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="2" width="20" height="20" rx="5"/>
+    <circle cx="12" cy="12" r="4.2"/>
+    <circle cx="17.3" cy="6.7" r="1.1" fill="#fff" stroke="none"/>
+  </svg>
+</a>
+
 <a class="wpp-float" id="floatWpp" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
   <svg viewBox="0 0 24 24" fill="#fff">
     <path d="M17.47 14.38c-.29-.15-1.71-.85-1.98-.94-.27-.1-.46-.15-.66.15-.19.29-.75.94-.92 1.13-.17.19-.34.22-.63.07-.29-.15-1.22-.45-2.33-1.44-.86-.77-1.44-1.72-1.61-2.01-.17-.29-.02-.45.13-.6.13-.13.29-.34.44-.51.15-.17.19-.29.29-.48.1-.19.05-.36-.02-.51-.07-.15-.66-1.59-.9-2.18-.24-.57-.48-.5-.66-.51-.17-.01-.36-.01-.56-.01-.19 0-.51.07-.78.36-.27.29-1.02 1-1.02 2.43 0 1.43 1.04 2.82 1.19 3.01.15.19 2.05 3.13 4.96 4.39.69.3 1.23.48 1.65.61.69.22 1.32.19 1.82.11.55-.08 1.71-.7 1.95-1.37.24-.68.24-1.26.17-1.38-.07-.12-.26-.19-.55-.34z"/>
@@ -1249,10 +1269,10 @@
     document.getElementById('addCartConfirm').classList.remove('show');
     updateItemSubtotal();
     modalBackdrop.classList.add('open');
-    document.getElementById('floatWpp').style.display='none';
+    document.getElementById('floatWpp').style.display='none'; document.getElementById('floatIg').style.display='none';
   }
-  document.getElementById('modalClose').addEventListener('click', ()=> { modalBackdrop.classList.remove('open'); document.getElementById('floatWpp').style.display='flex'; });
-  modalBackdrop.addEventListener('click', (e)=>{ if(e.target === modalBackdrop){ modalBackdrop.classList.remove('open'); document.getElementById('floatWpp').style.display='flex'; } });
+  document.getElementById('modalClose').addEventListener('click', ()=> { modalBackdrop.classList.remove('open'); document.getElementById('floatWpp').style.display='flex'; document.getElementById('floatIg').style.display='flex'; });
+  modalBackdrop.addEventListener('click', (e)=>{ if(e.target === modalBackdrop){ modalBackdrop.classList.remove('open'); document.getElementById('floatWpp').style.display='flex'; document.getElementById('floatIg').style.display='flex'; } });
 
   document.querySelectorAll('.size-tab').forEach(tab=>{
     tab.addEventListener('click', ()=>{
@@ -1288,7 +1308,7 @@
   document.getElementById('goToCartLink').addEventListener('click', (e)=>{
     e.preventDefault();
     modalBackdrop.classList.remove('open');
-    document.getElementById('floatWpp').style.display='flex';
+    document.getElementById('floatWpp').style.display='flex'; document.getElementById('floatIg').style.display='flex';
     openCart();
   });
 
@@ -1353,11 +1373,11 @@
     renderCart();
     showCartStep1();
     cartBackdrop.classList.add('open');
-    document.getElementById('floatWpp').style.display='none';
+    document.getElementById('floatWpp').style.display='none'; document.getElementById('floatIg').style.display='none';
   }
   function closeCart(){
     cartBackdrop.classList.remove('open');
-    document.getElementById('floatWpp').style.display='flex';
+    document.getElementById('floatWpp').style.display='flex'; document.getElementById('floatIg').style.display='flex';
   }
 
   function showCartStep1(){
