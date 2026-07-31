@@ -583,6 +583,36 @@
     display:none; align-items:center; justify-content:center; z-index:100; padding:20px;
   }
   .modal-backdrop.open{display:flex;}
+
+  .promo-popup{
+    background:linear-gradient(160deg, #241a0d 0%, #1B120A 55%, #2b1c10 100%);
+    border:1px solid rgba(232,184,75,0.3);
+    border-radius:22px; max-width:420px; width:100%;
+    padding:38px 30px; position:relative; text-align:center;
+    box-shadow:0 30px 60px rgba(0,0,0,0.4);
+  }
+  .promo-popup-close{
+    position:absolute; top:14px; right:16px; font-size:24px; color:rgba(251,243,228,0.6);
+    line-height:1; padding:4px;
+  }
+  .promo-popup-badge{
+    display:inline-flex; align-items:center; gap:8px; margin-bottom:18px;
+    padding:7px 18px; border-radius:30px; border:1px solid rgba(232,184,75,0.4);
+    background:rgba(232,184,75,0.1); color:var(--gold-bright); font-size:11px; font-weight:800;
+    letter-spacing:1.6px; text-transform:uppercase;
+  }
+  .promo-popup-badge .dot{width:7px; height:7px; border-radius:50%; background:var(--gold-bright); animation:pulseDot 1.6s ease-in-out infinite;}
+  .promo-popup h3{
+    font-family:var(--font-display); font-weight:900; font-size:30px; line-height:1.15;
+    color:var(--cream);
+  }
+  .promo-popup h3 span{color:var(--gold-bright);}
+  .promo-popup p{font-size:14px; color:rgba(251,243,228,0.75); margin-top:12px; line-height:1.55;}
+  .promo-popup .btn-gold{display:inline-block; margin-top:24px; width:100%;}
+  .promo-popup .promo-popup-skip{
+    display:block; margin-top:14px; font-size:12.5px; color:rgba(251,243,228,0.45);
+    text-decoration:underline;
+  }
   .modal{
     background:var(--cream); border-radius:20px; max-width:420px; width:100%;
     padding:32px 28px; position:relative; max-height:88vh; overflow-y:auto;

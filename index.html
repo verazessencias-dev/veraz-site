@@ -109,12 +109,34 @@
     <div>
       <span class="eyebrow">VERAZ ESSÊNCIAS</span>
       <h2>Nossa<br><span class="gold-text">Loja Virtual</span></h2>
-      <p>10 essências de alta concentração, testers pra experimentar sem medo, e presença que fica no ar. Tudo num só lugar.</p>
-      <a href="#perfumes" class="btn-gold">Ver Catálogo</a>
+      <p>Essências de alta concentração, testers pra experimentar sem medo, e presença que fica no ar. Tudo num só lugar.</p>
     </div>
     <div class="store-banner-visual">
       <img src="frasco-real.jpeg?v=2" alt="Frasco VERAZ Presença, inspirado em Coco Mademoiselle">
     </div>
+  </div>
+</section>
+
+<section class="catalog" id="perfumes">
+  <div class="sparkle-field light">
+    <span class="s s1"></span><span class="s s2"></span><span class="s s3"></span><span class="s s4"></span><span class="s s5"></span>
+    <span class="s s6"></span><span class="s s7"></span><span class="s s8"></span><span class="s s9"></span><span class="s s10"></span>
+  </div>
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow" style="color:var(--wine);">🔥 PREÇO DE LANÇAMENTO</span>
+      <h2>Nossas 10 essências, com desconto de estreia</h2>
+      <p>Por conta do lançamento do site e da marca, essas 10 fragrâncias — 5 femininas e 5 masculinas — estão com preço promocional. É por tempo limitado.</p>
+    </div>
+    <div class="line-heading feminino-heading">
+      <span class="line-heading-diamond">◆</span> Perfumes Femininos
+    </div>
+    <div class="grid" id="gridFem"></div>
+
+    <div class="line-heading masculino-heading">
+      <span class="line-heading-diamond">◆</span> Perfumes Masculinos
+    </div>
+    <div class="grid" id="gridMasc"></div>
   </div>
 </section>
 
@@ -141,27 +163,41 @@
       <p>Três opções, todas com preço de lançamento.</p>
     </div>
 
-    <div class="fd-grid">
-      <div class="fd-card">
-        <div class="fd-badge">MAIS PROCURADO</div>
-        <h3>Kit Presença Paterna</h3>
-        <p class="fd-desc">Executivo + Liberdade — dois clássicos, uma caixa só.</p>
-        <div class="fd-price"><span class="fd-old">R$ 174,80</span><span class="fd-main">R$ 149,90</span></div>
-        <button class="fd-btn" data-kit="Kit Presença Paterna (Executivo + Liberdade)" data-price="149.90">Adicionar ao carrinho</button>
+    <div class="tester-list" style="max-width:640px; margin:0 auto;">
+      <div class="tester-row">
+        <div class="tester-row-info">
+          <span class="tester-row-insp">Mais procurado</span>
+          <span class="tester-row-name">Kit Presença Paterna</span>
+          <span style="display:block; font-size:12.5px; color:#8a7b64; margin-top:2px;">Executivo + Liberdade</span>
+        </div>
+        <div class="tester-row-price">
+          <span class="tester-row-old">R$ 174,80</span>
+          <span class="tester-row-main">R$ 149,90</span>
+        </div>
+        <button class="fd-btn tester-row-btn" data-kit="Kit Presença Paterna (Executivo + Liberdade)" data-price="149.90">Comprar</button>
       </div>
-      <div class="fd-card">
-        <div class="fd-badge">EDIÇÃO LIMITADA</div>
-        <h3>Kit Domínio</h3>
-        <p class="fd-desc">Noturno + Império — pra quem gosta de presença forte.</p>
-        <div class="fd-price"><span class="fd-old">R$ 219,80</span><span class="fd-main">R$ 189,90</span></div>
-        <button class="fd-btn" data-kit="Kit Domínio (Noturno + Império)" data-price="189.90">Adicionar ao carrinho</button>
+      <div class="tester-row">
+        <div class="tester-row-info">
+          <span class="tester-row-insp">Edição limitada</span>
+          <span class="tester-row-name">Kit Domínio</span>
+          <span style="display:block; font-size:12.5px; color:#8a7b64; margin-top:2px;">Noturno + Império</span>
+        </div>
+        <div class="tester-row-price">
+          <span class="tester-row-old">R$ 219,80</span>
+          <span class="tester-row-main">R$ 189,90</span>
+        </div>
+        <button class="fd-btn tester-row-btn" data-kit="Kit Domínio (Noturno + Império)" data-price="189.90">Comprar</button>
       </div>
-      <div class="fd-card">
-        <div class="fd-badge">ENTRADA</div>
-        <h3>Kit Descoberta</h3>
-        <p class="fd-desc">1 frasco 60ml + 1 tester 5ml — pra presentear com segurança.</p>
-        <div class="fd-price"><span class="fd-main">R$ 99,90</span></div>
-        <button class="fd-btn" data-kit="Kit Descoberta" data-price="99.90">Adicionar ao carrinho</button>
+      <div class="tester-row">
+        <div class="tester-row-info">
+          <span class="tester-row-insp">Entrada</span>
+          <span class="tester-row-name">Kit Descoberta</span>
+          <span style="display:block; font-size:12.5px; color:#8a7b64; margin-top:2px;">1 frasco 60ml + 1 tester 5ml</span>
+        </div>
+        <div class="tester-row-price">
+          <span class="tester-row-main">R$ 99,90</span>
+        </div>
+        <button class="fd-btn tester-row-btn" data-kit="Kit Descoberta" data-price="99.90">Comprar</button>
       </div>
     </div>
   </div>
@@ -200,26 +236,6 @@
     <p style="max-width:600px; margin:38px auto 0; font-size:15px; color:rgba(251,243,228,0.65); line-height:1.6;">Essência de alta concentração. Sem pagar pelo nome estampado no vidro — só pelo cheiro que realmente fica.</p>
   </div>
 </section>
-
-<section class="catalog" id="perfumes">
-  <div class="sparkle-field light">
-    <span class="s s1"></span><span class="s s2"></span><span class="s s3"></span><span class="s s4"></span><span class="s s5"></span>
-    <span class="s s6"></span><span class="s s7"></span><span class="s s8"></span><span class="s s9"></span><span class="s s10"></span>
-  </div>
-  <div class="container">
-    <div class="line-heading feminino-heading">
-      <span class="line-heading-diamond">◆</span> Perfumes Femininos
-    </div>
-    <div class="grid" id="gridFem"></div>
-
-    <div class="line-heading masculino-heading">
-      <span class="line-heading-diamond">◆</span> Perfumes Masculinos
-    </div>
-    <div class="grid" id="gridMasc"></div>
-  </div>
-</section>
-
-
 
 <section class="contact" id="contato">
   <div class="sparkle-field light">
@@ -275,6 +291,17 @@
     <div class="footer-copy">© 2026 <strong>VERAZ ESSÊNCIAS</strong> — Todos os direitos reservados.</div>
   </div>
 </footer>
+
+<div class="modal-backdrop" id="promoBackdrop">
+  <div class="promo-popup">
+    <button class="promo-popup-close" id="promoClose" aria-label="Fechar">&times;</button>
+    <div class="promo-popup-badge"><span class="dot"></span>Lançamento VERAZ</div>
+    <h3>10 essências.<br>Preço de <span>estreia</span>.</h3>
+    <p>Por conta do lançamento do site e da marca, nossas 10 fragrâncias — femininas e masculinas — estão com desconto exclusivo. Por tempo limitado.</p>
+    <a href="#perfumes" class="btn-gold" id="promoCta">Ver as ofertas</a>
+    <button class="promo-popup-skip" id="promoSkip">Continuar navegando</button>
+  </div>
+</div>
 
 <div class="modal-backdrop" id="modalBackdrop">
   <div class="modal">

@@ -133,6 +133,28 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
   }
   renderTesterList();
 
+  // ---------- Popup promocional de lançamento (só na home, 1x por sessão) ----------
+  (function(){
+    const promoBackdrop = document.getElementById('promoBackdrop');
+    if(!promoBackdrop) return;
+    const alreadyShown = sessionStorage.getItem('verazPromoShown');
+    function closePromo(){ promoBackdrop.classList.remove('open'); }
+    function openPromo(){
+      promoBackdrop.classList.add('open');
+      sessionStorage.setItem('verazPromoShown', '1');
+    }
+    if(!alreadyShown){
+      setTimeout(openPromo, 1800);
+    }
+    const closeBtn = document.getElementById('promoClose');
+    const skipBtn = document.getElementById('promoSkip');
+    const ctaBtn = document.getElementById('promoCta');
+    if(closeBtn) closeBtn.addEventListener('click', closePromo);
+    if(skipBtn) skipBtn.addEventListener('click', closePromo);
+    if(ctaBtn) ctaBtn.addEventListener('click', closePromo);
+    promoBackdrop.addEventListener('click', (e)=>{ if(e.target === promoBackdrop) closePromo(); });
+  })();
+
   // ---------- Nossas Essências (abas) ----------
   function switchEssTab(tabName){
     document.querySelectorAll('.ess-tab').forEach(t => t.classList.toggle('active', t.dataset.esstab === tabName));
