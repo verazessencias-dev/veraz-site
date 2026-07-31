@@ -92,6 +92,47 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
   }
   renderCards();
 
+  function renderTesterList(){
+    const container = document.getElementById('testerList');
+    if(!container) return;
+    container.innerHTML = "";
+    const allItems = [
+      ...PRODUCTS.map((p, idx) => ({p, idx, source:'main'})),
+      ...ESSENCIAS.map((p, idx) => ({p, idx, source:'ess'})),
+    ];
+    allItems.forEach(({p, idx, source}) => {
+      const row = document.createElement('div');
+      row.className = 'tester-row';
+      row.dataset.idx = idx;
+      row.dataset.source = source;
+      row.dataset.testermode = '1';
+      const photoHtml = p.foto ? `
+        <div class="tester-row-photo"><img src="${p.foto}" alt="Frasco VERAZ ${p.nome}"></div>
+      ` : `
+        <div class="tester-row-photo"><svg viewBox="340 115 175 415" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M 410 470 C 405 430 402 400 408 375 C 412 358 420 350 450 350 C 480 350 488 358 492 375 C 498 400 495 430 490 470 C 493 495 493 515 450 518 C 407 515 407 495 410 470 Z"/>
+          <path d="M 435 350 C 433 335 433 322 435 312 L 465 312 C 467 322 467 335 465 350"/>
+          <path d="M 428 312 C 428 300 430 292 450 292 C 470 292 472 300 472 312"/>
+          <line x1="428" y1="300" x2="472" y2="300"/>
+        </svg></div>
+      `;
+      row.innerHTML = `
+        ${photoHtml}
+        <div class="tester-row-info">
+          <span class="tester-row-insp">Inspirado em ${p.insp}</span>
+          <span class="tester-row-name">${p.nome}</span>
+        </div>
+        <div class="tester-row-price">
+          ${p.decantOriginal ? `<span class="tester-row-old">${fmt(p.decantOriginal)}</span>` : ''}
+          <span class="tester-row-main">${fmt(p.decant)}</span>
+        </div>
+        <button class="tester-row-btn">Comprar</button>
+      `;
+      container.appendChild(row);
+    });
+  }
+  renderTesterList();
+
   // ---------- Nossas Essências (abas) ----------
   function switchEssTab(tabName){
     document.querySelectorAll('.ess-tab').forEach(t => t.classList.toggle('active', t.dataset.esstab === tabName));
@@ -133,11 +174,11 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
   let currentQty = 1;
 
   document.addEventListener('click', (e)=>{
-    const card = e.target.closest('.card');
+    const card = e.target.closest('.card, .tester-row');
     if(!card) return;
     const sourceList = card.dataset.source === 'ess' ? ESSENCIAS : PRODUCTS;
     currentProduct = sourceList[card.dataset.idx];
-    currentSize = 'frasco';
+    currentSize = card.dataset.testermode === '1' ? 'decant' : 'frasco';
     currentQty = 1;
     openModal();
   });
