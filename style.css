@@ -515,9 +515,9 @@
   }
   .tester-row-btn:hover{background:var(--wine);}
   @media (max-width:640px){
-    .tester-row{flex-wrap:wrap; gap:10px; padding:16px;}
-    .tester-row-price{margin-left:auto;}
-    .tester-row-btn{width:100%; margin-top:4px;}
+    .tester-row{flex-direction:column; align-items:flex-start; gap:8px; padding:16px;}
+    .tester-row-price{text-align:left; margin-top:2px;}
+    .tester-row-btn{width:100%; margin-top:6px;}
   }
 
   .decants{background:var(--ink); color:var(--cream); padding:90px 0; position:relative; overflow:hidden;}
