@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VERAZ — Nossas Essências</title>
+<meta name="description" content="VERAZ Essências — catálogo completo de essências femininas, masculinas e unissex.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,500;1,600&family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<script>
+  const CONFIG = {
+    whatsappNumber: "5511981663107",
+    pixKey:        "68249557000102",
+    merchantName:  "VERAZ ESSENCIAS",
+    merchantCity:  "SAO PAULO",
+    sheetsUrl:     "https://script.google.com/macros/s/AKfycbyZHa2VsS6VAwr_Gfp-xVxlrPi-2SAYXS91Uju_4tMRbcKJymrA1QUY3j1TT-D858_f/exec",
+  };
+
+  const SHIPPING = {
+    retirada: { label: "Retirar em mãos",  price: 0,     note: "Combinamos local e horário pelo WhatsApp." },
+    motoboy:  { label: "Motoboy",          price: 12.00, note: "Entrega no mesmo dia útil, região metropolitana." },
+    correios: { label: "Correios",         price: 18.90, note: "Prazo médio de 3 a 7 dias úteis após postagem." },
+  };
+
+  const ESSENCIAS = [
+    {insp:"Miss Dior",         nome:"Delicadeza", linha:"feminino",  categoria:"classico", blurb:"Romance floral, delicadeza que não perde a força.", combina:"Quem gosta de um floral doce e romântico, sem ser enjoativo. Perfeito pro dia a dia elegante.", preco:124.90, decant:16.90, notas:{topo:"Mandarina, Damasco, Pêssego", coracao:"Morango Silvestre, Jasmim", fundo:"Patchouli, Madeira de Âmbar, Musgo, Cedro"}},
+    {insp:"La Vie Est Belle",  nome:"Felicidade", linha:"feminino",  categoria:"classico", blurb:"Doçura quente que abraça e não sai da lembrança.", combina:"Mulheres que querem um perfume doce, quente e \"abraçador\" — marca presença sem ser agressivo.", preco:124.90, decant:16.90, notas:{topo:"Groselha Preta, Pera", coracao:"Íris, Jasmim, Flor de Laranjeira", fundo:"Pralinê, Baunilha, Patchouli, Fava Tonka"}},
+    {insp:"Black Opium",       nome:"Vício",      linha:"feminino",  categoria:"classico", blurb:"Café, baunilha e uma dose de vício assumido.", combina:"Noite, festa, quem gosta de algo intenso e viciante (literalmente tem nota de café).", preco:124.90, decant:16.90, notas:{topo:"Pera, Pimenta Rosa, Flor de Laranjeira", coracao:"Café, Jasmim, Amêndoa Amarga, Alcaçuz", fundo:"Baunilha, Patchouli, Madeira de Cashmere, Cedro"}},
+    {insp:"J'adore",           nome:"Adoração",   linha:"feminino",  categoria:"classico", blurb:"Clássico atemporal. Elegância que nunca sai de moda.", combina:"Clássico atemporal, elegante, ótimo pra quem trabalha em ambiente formal.", preco:124.90, decant:16.90, notas:{topo:"Bergamota, Pera, Melão", coracao:"Rosa, Jasmim, Orquídea", fundo:"Almíscar, Cedro, Baunilha"}},
+    {insp:"Flowerbomb",        nome:"Explosão",   linha:"feminino",  categoria:"classico", blurb:"Floral com peso. Impossível passar despercebida.", combina:"Personalidade forte, feminino mas com \"peso\" — não passa despercebida.", preco:159.90, decant:19.90, notas:{topo:"Bergamota, Chá Verde, Osmanthus", coracao:"Jasmim, Rosa Centifolia, Orquídea", fundo:"Pralinê, Patchouli, Baunilha"}},
+
+    {insp:"Bleu de Chanel",    nome:"Elegância",  linha:"masculino", categoria:"classico", blurb:"Versátil, discreto, o coringa de qualquer ocasião.", combina:"Versátil, do trabalho ao jantar — o \"coringa\" masculino.", preco:124.90, decant:16.90, notas:{topo:"Limão, Hortelã, Toranja Rosa", coracao:"Gengibre, Noz-moscada, Jasmim", fundo:"Incenso, Cedro, Sândalo, Labdanum"}},
+    {insp:"One Million",       nome:"Fortuna",    linha:"masculino", categoria:"classico", blurb:"Especiado e chamativo. Presença que não passa batido.", combina:"Presença forte, chamativo, ótimo pra sair à noite.", preco:124.90, decant:16.90, notas:{topo:"Toranja, Menta, Sangue de Dragão", coracao:"Canela, Especiarias, Rosa", fundo:"Couro, Âmbar, Patchouli"}},
+    {insp:"Eros",              nome:"Conquista",  linha:"masculino", categoria:"classico", blurb:"Energia jovem, sedução direta ao ponto.", combina:"Energia jovem, sedutor, dia e noite.", preco:124.90, decant:16.90, notas:{topo:"Hortelã, Maçã Verde, Limão", coracao:"Baunilha Tahitiana, Sálvia, Gerânio", fundo:"Madeira Âmbar, Musgo de Carvalho, Fava Tonka"}},
+    {insp:"Polo Blue",         nome:"Clássico",   linha:"masculino", categoria:"classico", blurb:"Fresco e aquático. Verão o ano inteiro.", combina:"Verão, casual, ambiente de trabalho leve — bem discreto.", preco:124.90, decant:16.90, notas:{topo:"Melão, Pepino, Manjericão", coracao:"Sálvia, Gerânio, Notas Marinhas", fundo:"Almíscar, Musgo de Carvalho, Cedro"}},
+    {insp:"Le Male",           nome:"Rebeldia",   linha:"masculino", categoria:"classico", blurb:"Doce-especiado, ousado, impossível de confundir.", combina:"Clássico ousado, doce-especiado, marca registrada facilmente reconhecível.", preco:124.90, decant:16.90, notas:{topo:"Hortelã, Lavanda, Bergamota", coracao:"Canela, Baunilha, Sálvia", fundo:"Âmbar, Baunilha, Almíscar, Fava Tonka"}},
+    {insp:"Fahrenheit",        nome:"Autêntico",  linha:"masculino", categoria:"classico", blurb:"Único e marcante. Não é pra todo mundo — e tudo bem.", combina:"Personalidade forte e única — tem uma nota de couro bem marcante, não é pra todo mundo, mas quem gosta, ama.", preco:124.90, decant:16.90, notas:{topo:"Lavanda, Tangerina, Flor de Noz-moscada, Cedro, Bergamota, Camomila", coracao:"Noz-moscada, Madressilva, Cravo, Sândalo, Violeta, Jasmim", fundo:"Couro, Fava Tonka, Âmbar, Patchouli, Almíscar, Vetiver"}},
+
+    {insp:"Baccarat Rouge 540",nome:"Âmbar Raro", linha:"unissex",   categoria:"nicho", blurb:"Doce, amadeirado, viciante. O queridinho do momento.", combina:"Presença luxuosa e doce-amadeirada, virou \"queridinho\" das redes sociais — reconhecível de longe.", preco:159.90, decant:19.90, notas:{topo:"Açafrão, Jasmim", coracao:"Madeira de Âmbar, Âmbar Cinzento, Hedione", fundo:"Resina de Abeto, Cedro, Açúcar, Ambroxan"}},
+    {insp:"Santal 33",         nome:"Deserto",    linha:"unissex",   categoria:"nicho", blurb:"Minimalista e inconfundível. O cheiro que todo mundo pergunta qual é.", combina:"Minimalista, sofisticado, o \"cheiro de Nova York\" — discreto mas inconfundível.", preco:159.90, decant:19.90, notas:{topo:"Cardamomo, Violeta, Íris", coracao:"Sândalo, Ambrox", fundo:"Cedro, Couro"}},
+    {insp:"Tobacco Vanille",   nome:"Charuto",    linha:"unissex",   categoria:"nicho", blurb:"Quente, encorpado, para quem gosta de presença densa.", combina:"Outono/inverno, ambientes fechados e aconchegantes, personalidade marcante e quente.", preco:159.90, decant:19.90, notas:{topo:"Tabaco, Especiarias", coracao:"Baunilha, Cacau, Fava Tonka", fundo:"Madeira Seca, Frutas Secas"}},
+    {insp:"Bvlgari Black",     nome:"Enigma",     linha:"unissex",   categoria:"classico", blurb:"Diferente de tudo que você já sentiu. Vicia.", combina:"Cheiro de \"pneu novo/borracha\" que vicia, bem andrógino.", preco:124.90, decant:16.90, notas:{topo:"Chá Defumado", coracao:"Borracha, Ambrette", fundo:"Baunilha, Almíscar"}},
+    {insp:"CK One",            nome:"Livre",      linha:"unissex",   categoria:"classico", blurb:"Leve, fresco, para qualquer hora do dia.", combina:"Leve, fresco, o clássico dos anos 90 — perfeito pra qualquer hora do dia.", preco:124.90, decant:16.90, notas:{topo:"Bergamota, Cardamomo, Abacaxi", coracao:"Chá Verde, Violeta, Noz-moscada", fundo:"Almíscar, Âmbar, Sândalo"}},
+  ];
+</script>
+
+
+<div class="launch-bar">
+  <span class="dot"></span>VERAZ CHEGOU — PREÇO DE LANÇAMENTO NAS 10 ESSÊNCIAS
+</div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <button class="nav-toggle" id="navToggle" aria-label="Abrir menu">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="nav-logo">
+      <svg viewBox="340 115 175 415"><g fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M 410 470 C 405 430 402 400 408 375 C 412 358 420 350 450 350 C 480 350 488 358 492 375 C 498 400 495 430 490 470 C 493 495 493 515 450 518 C 407 515 407 495 410 470 Z"/>
+      <path d="M 435 350 C 433 335 433 322 435 312 L 465 312 C 467 322 467 335 465 350"/>
+      <path d="M 428 312 C 428 300 430 292 450 292 C 470 292 472 300 472 312"/>
+      <line x1="428" y1="300" x2="472" y2="300"/>
+      <path d="M 415 460 C 430 466 470 466 485 460" opacity="0.55"/>
+      <path d="M 450 292 C 448 265 430 250 410 235 C 388 219 380 195 392 172 C 402 152 425 145 445 155 C 462 163 468 182 458 198 C 450 210 434 212 428 200 C 423 190 430 180 440 183 C 448 185 450 194 444 198"/>
+      <path d="M 410 235 C 392 232 378 240 372 256 C 367 270 374 284 388 286 C 400 288 409 279 406 267 C 404 259 396 256 391 262"/>
+      <path d="M 392 172 C 375 168 362 175 358 190 C 355 202 363 213 375 213 C 385 213 391 205 388 196"/>
+      <path d="M 445 155 C 452 138 470 130 486 138 C 500 145 504 161 494 172 C 486 180 474 178 473 167"/>
+      <path d="M 415 250 C 405 258 400 270 405 280"/>
+      <path d="M 468 190 C 478 195 484 205 480 216"/>
+    </g>
+    <circle cx="440" cy="199" r="4" fill="currentColor"/>
+    <circle cx="493" cy="155" r="3" fill="currentColor"/></svg>
+      VERAZ
+    </div>
+    <nav class="nav-links" id="navLinks">
+      <a href="essencias.html">Essências</a>
+      <a href="index.html#diadospais">Dia dos Pais</a>
+      <a href="index.html#sobre">Sobre</a>
+      <a href="index.html#decants">Testers</a>
+      <a href="index.html#clube">Clube VERAZ</a>
+      <a href="index.html#contato">Contato</a>
+    </nav>
+    <div class="nav-cta">
+      <button class="cart-btn" id="cartBtn" aria-label="Ver carrinho">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+        </svg>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+      <a class="btn-wpp" id="navWpp" target="_blank" rel="noopener">Falar no WhatsApp</a>
+    </div>
+  </div>
+</header>
+
+<div class="drawer-backdrop" id="drawerBackdrop">
+  <nav class="drawer" id="drawer">
+    <div class="drawer-head">
+      <div class="drawer-logo">VERAZ</div>
+      <button class="drawer-close" id="drawerClose" aria-label="Fechar menu">&times;</button>
+    </div>
+    <a href="essencias.html" class="drawer-link">Essências</a>
+    <a href="index.html#diadospais" class="drawer-link">Dia dos Pais</a>
+    <a href="index.html#sobre" class="drawer-link">Sobre</a>
+    <a href="index.html#decants" class="drawer-link">Testers</a>
+    <a href="index.html#clube" class="drawer-link">Clube VERAZ</a>
+    <a href="index.html#contato" class="drawer-link">Contato</a>
+    <a href="#" class="drawer-link drawer-wpp" id="drawerWpp">Falar no WhatsApp</a>
+  </nav>
+</div>
+
+<section class="essencias-catalog" id="essencias">
+  <div class="sparkle-field light">
+    <span class="s s1"></span><span class="s s2"></span><span class="s s3"></span><span class="s s4"></span><span class="s s5"></span>
+    <span class="s s6"></span><span class="s s7"></span><span class="s s8"></span><span class="s s9"></span><span class="s s10"></span>
+  </div>
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">CATÁLOGO COMPLETO</span>
+      <h2>Nossas Essências</h2>
+      <p>Mais opções, mesma qualidade — escolha a categoria.</p>
+    </div>
+
+    <div class="mv-tabs">
+      <button class="ess-tab active" data-esstab="feminino">Femininas</button>
+      <button class="ess-tab" data-esstab="masculino">Masculinas</button>
+      <button class="ess-tab" data-esstab="unissex">Unissex</button>
+    </div>
+
+    <div class="ess-panel active" data-esspanel="feminino">
+      <div class="grid" id="gridEssFem"></div>
+    </div>
+    <div class="ess-panel" data-esspanel="masculino">
+      <div class="grid" id="gridEssMasc"></div>
+    </div>
+    <div class="ess-panel" data-esspanel="unissex">
+      <div class="grid" id="gridEssUnissex"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="sparkle-field dark">
+    <span class="s s1"></span><span class="s s2"></span><span class="s s3"></span><span class="s s4"></span><span class="s s5"></span>
+    <span class="s s6"></span><span class="s s7"></span><span class="s s8"></span><span class="s s9"></span><span class="s s10"></span>
+  </div>
+  <div class="container footer-inner">
+    <div class="footer-links">
+      <a href="https://instagram.com/verazessencias" target="_blank" rel="noopener" class="footer-ig">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="2" width="20" height="20" rx="5"/>
+          <circle cx="12" cy="12" r="4.2"/>
+          <circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" stroke="none"/>
+        </svg>
+        <span>@verazessencias</span>
+      </a>
+      <a href="mailto:veraz.essencias@gmail.com" class="footer-ig">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="3"/>
+          <path d="M3 6.5 12 13 21 6.5"/>
+        </svg>
+        <span>veraz.essencias@gmail.com</span>
+      </a>
+    </div>
+    <div class="footer-site">www.verazessencias.com.br</div>
+    <div class="footer-copy">© 2026 <strong>VERAZ ESSÊNCIAS</strong> — Todos os direitos reservados.</div>
+  </div>
+</footer>
+
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal">
+    <button class="modal-close" id="modalClose">&times;</button>
+    <div class="modal-eyebrow" id="modalNichoBadge" style="display:none; color:var(--gold-strong); font-weight:800;">◆ EDIÇÃO NICHO</div>
+    <div class="modal-eyebrow">Inspirado em</div>
+    <h3 id="modalTitle">—</h3>
+    <div class="modal-sub" id="modalSub">—</div>
+    <p class="modal-blurb" id="modalBlurb">—</p>
+    <div class="modal-notes" id="modalNotes"></div>
+    <div class="modal-combina" id="modalCombina" style="display:none;"></div>
+
+    <div class="size-tabs">
+      <div class="size-tab active" data-size="frasco">Frasco 60ml</div>
+      <div class="size-tab" data-size="decant">Tester 5ml</div>
+    </div>
+
+    <div class="qty-row">
+      <button id="qtyMinus">−</button>
+      <span id="qtyVal" style="font-weight:700; font-size:16px;">1</span>
+      <button id="qtyPlus">+</button>
+      <span style="font-size:13px; color:#8a7b64;">unidade(s)</span>
+    </div>
+
+    <div class="modal-item-total">
+      <span>Subtotal</span>
+      <span id="itemSubtotal">R$ 0,00</span>
+    </div>
+
+    <button class="btn-gold btn-full" id="addToCartBtn" style="margin-top:18px;">Adicionar ao Carrinho</button>
+    <p class="add-cart-confirm" id="addCartConfirm">Adicionado! <a href="#" id="goToCartLink">Ver carrinho →</a></p>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="cartBackdrop">
+  <div class="modal cart-modal">
+    <button class="modal-close" id="cartClose">&times;</button>
+    <h3>Seu Carrinho</h3>
+
+    <div class="cart-empty" id="cartEmpty">Seu carrinho está vazio. Escolhe uma essência pra começar. 🌸</div>
+    <div id="cartItems"></div>
+
+    <div id="cartSummaryBlock" style="display:none;">
+      <div class="cart-subtotal-row"><span>Subtotal</span><span id="cartSubtotal">R$ 0,00</span></div>
+      <div class="cart-discount-row" id="cartDiscountRow" style="display:none;"><span>Desconto (2+ produtos, 10%)</span><span id="cartDiscountVal">-R$ 0,00</span></div>
+
+      <div id="cartStep1">
+        <div class="cart-step-actions">
+          <button class="btn-outline-cart" id="cartContinueShopping">Continuar Comprando</button>
+          <button class="btn-gold btn-full" id="cartGoCheckout">Avançar</button>
+        </div>
+      </div>
+
+      <div id="cartStep2" style="display:none;">
+        <button class="cart-back-link" id="cartBackStep1">← Voltar ao carrinho</button>
+
+        <div class="delivery-block">
+          <div class="shipping-label">Seus dados</div>
+          <div class="delivery-field">
+            <input id="custNome" type="text" placeholder="Nome completo *">
+          </div>
+          <div class="delivery-field">
+            <input id="custTelefone" type="text" placeholder="WhatsApp / telefone *">
+          </div>
+          <div class="delivery-field">
+            <input id="custEmail" type="email" placeholder="E-mail (pra receber a confirmação) *">
+          </div>
+          <div class="delivery-field" id="custEnderecoBlock">
+            <textarea id="custEndereco" rows="2" placeholder="Endereço completo (rua, número, bairro, cidade/UF) *"></textarea>
+          </div>
+          <div class="delivery-error" id="deliveryError"></div>
+        </div>
+
+        <div class="shipping-block">
+          <div class="shipping-label">Entrega</div>
+          <div class="shipping-tabs" id="cartShipTabs">
+            <div class="ship-tab active" data-ship="retirada">Retirar em mãos</div>
+            <div class="ship-tab" data-ship="correios">Correios</div>
+          </div>
+          <div id="cepBlock" style="display:none;">
+            <div class="cep-input-row">
+              <input id="cepInput" type="text" placeholder="00000-000" maxlength="9">
+              <button class="btn-gold" id="cepCalcBtn">Calcular</button>
+            </div>
+            <div class="cep-result" id="cepResult"></div>
+          </div>
+        </div>
+
+        <div class="modal-total">
+          <span>Total</span>
+          <span id="modalTotal">R$ 0,00</span>
+        </div>
+        <div class="modal-shipping-note" id="modalShippingNote"></div>
+
+        <div class="pay-tabs">
+          <div class="pay-tab active" data-pay="wpp">WhatsApp</div>
+          <div class="pay-tab" data-pay="pix">Pix (QR Code)</div>
+        </div>
+
+        <div class="pay-panel active" id="panelWpp">
+          <p style="font-size:13.5px; color:#5b4a38; margin-top:6px;">Fecha o pedido direto com a gente — confirmamos estoque e combinamos entrega.</p>
+          <a class="btn-gold btn-full" id="wppBuyBtn" target="_blank" rel="noopener">Finalizar no WhatsApp</a>
+        </div>
+
+        <div class="pay-panel" id="panelPix">
+          <div id="qrcode-box"></div>
+          <p class="pix-note">Escaneie com o app do seu banco. O código já vem com o valor exato preenchido.</p>
+          <p class="pix-note" style="margin-top:10px; font-weight:600;">✅ Seu pedido e endereço já foram registrados. Depois de pagar, manda um alô no WhatsApp pra confirmar!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<a class="ig-float" id="floatIg" href="https://instagram.com/verazessencias" target="_blank" rel="noopener" aria-label="Seguir no Instagram">
+  <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="2" width="20" height="20" rx="5"/>
+    <circle cx="12" cy="12" r="4.2"/>
+    <circle cx="17.3" cy="6.7" r="1.1" fill="#fff" stroke="none"/>
+  </svg>
+</a>
+
+<a class="wpp-float" id="floatWpp" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
+  <svg viewBox="0 0 24 24" fill="#fff">
+    <path d="M17.47 14.38c-.29-.15-1.71-.85-1.98-.94-.27-.1-.46-.15-.66.15-.19.29-.75.94-.92 1.13-.17.19-.34.22-.63.07-.29-.15-1.22-.45-2.33-1.44-.86-.77-1.44-1.72-1.61-2.01-.17-.29-.02-.45.13-.6.13-.13.29-.34.44-.51.15-.17.19-.29.29-.48.1-.19.05-.36-.02-.51-.07-.15-.66-1.59-.9-2.18-.24-.57-.48-.5-.66-.51-.17-.01-.36-.01-.56-.01-.19 0-.51.07-.78.36-.27.29-1.02 1-1.02 2.43 0 1.43 1.04 2.82 1.19 3.01.15.19 2.05 3.13 4.96 4.39.69.3 1.23.48 1.65.61.69.22 1.32.19 1.82.11.55-.08 1.71-.7 1.95-1.37.24-.68.24-1.26.17-1.38-.07-.12-.26-.19-.55-.34z"/>
+    <path d="M12.02 2C6.5 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.08-1.33A9.96 9.96 0 0 0 12.02 22C17.53 22 22 17.52 22 12S17.53 2 12.02 2zm0 18.2c-1.66 0-3.2-.48-4.5-1.31l-.32-.19-3.02.79.8-2.94-.21-.31A8.17 8.17 0 0 1 3.82 12c0-4.52 3.68-8.2 8.2-8.2 4.52 0 8.2 3.68 8.2 8.2 0 4.52-3.68 8.2-8.2 8.2z"/>
+  </svg>
+</a>
+
+<script src="app.js"></script>
+
+</body>
+</html>
