@@ -271,6 +271,9 @@
   .section-head p{margin-top:16px; color:#5b4a38; font-size:16px;}
 
   .catalog{padding:64px 0; background:linear-gradient(180deg, var(--cream) 0%, var(--cream-deep) 100%); position:relative; overflow:hidden;}
+  .essencias-catalog{padding:64px 0; background:var(--cream); position:relative; overflow:hidden;}
+  .ess-panel{display:none;}
+  .ess-panel.active{display:block; animation:mvFadeIn .35s ease both;}
   .catalog-filter{display:flex; justify-content:center; gap:10px; margin-bottom:50px; flex-wrap:wrap;}
   .line-heading{
     text-align:center; font-family:var(--font-display); font-weight:800;
@@ -447,12 +450,12 @@
   /* ============ MAIS DA VERAZ (abas) ============ */
   .more-veraz{padding:64px 0; background:var(--cream); position:relative; overflow:hidden;}
   .mv-tabs{display:flex; justify-content:center; gap:10px; margin-bottom:44px; flex-wrap:wrap;}
-  .mv-tab{
+  .mv-tab, .ess-tab{
     padding:12px 26px; border-radius:30px; font-size:14px; font-weight:700;
     border:1.5px solid var(--line); color:var(--ink-soft); background:#fff;
     transition:all .2s ease;
   }
-  .mv-tab.active, .mv-tab:hover{background:var(--ink); color:var(--cream); border-color:var(--ink);}
+  .mv-tab.active, .mv-tab:hover, .ess-tab.active, .ess-tab:hover{background:var(--ink); color:var(--cream); border-color:var(--ink);}
   .mv-panel{display:none;}
   .mv-panel.active{display:block; animation:mvFadeIn .35s ease both;}
   @keyframes mvFadeIn{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);}}
@@ -468,7 +471,7 @@
     .more-veraz{padding:44px 0;}
     .decants-card{padding:30px 22px;}
     .mv-tabs{gap:8px;}
-    .mv-tab{padding:10px 18px; font-size:12.5px;}
+    .mv-tab, .ess-tab{padding:10px 18px; font-size:12.5px;}
   }
   .fd-photo-slot img{width:100%; height:100%; object-fit:cover; border-radius:16px;}
   .fd-photo-slot svg{width:34px; height:34px; opacity:0.6;}
@@ -705,25 +708,27 @@
     {insp:"Hugo Boss",         nome:"Executivo",  linha:"masculino", foto:"frasco-chefe.jpg?v=2", blurb:"Tradição e confiança pra antes de qualquer reunião.",         precoOriginal:109.90, preco:84.90,  decantOriginal:14.90, decant:12.90, notas:{topo:"Maçã, Ameixa", coracao:"Canela, Gerânio", fundo:"Sândalo, Baunilha, Cedro"}},
     {insp:"Acqua di Gio",      nome:"Oceano",     linha:"masculino", foto:"frasco-agua-marinha.jpg?v=2", blurb:"Frescor, energia, verão o ano inteiro.",                      precoOriginal:109.90, preco:84.90,  decantOriginal:14.90, decant:12.90, notas:{topo:"Notas Marinhas, Bergamota", coracao:"Jasmim, Calone, Alecrim", fundo:"Almíscar Branco, Cedro, Patchouli"}},
     {insp:"Creed Aventus",     nome:"Império",    linha:"masculino", foto:"frasco-legado.jpg?v=2", blurb:"Poder e conquista. Presença de quem lidera.",                 precoOriginal:159.90, preco:119.90, decantOriginal:18.90, decant:14.90, notas:{topo:"Abacaxi, Cassis, Bergamota", coracao:"Bétula, Patchouli, Jasmim", fundo:"Almíscar, Musgo de Carvalho, Âmbar Cinza"}},
+  ];
 
-    {insp:"Miss Dior",         nome:"Delicadeza", linha:"feminino",  categoria:"classico", blurb:"Romance floral, delicadeza que não perde a força.", combina:"Quem gosta de um floral doce e romântico, sem ser enjoativo. Perfeito pro dia a dia elegante.", precoOriginal:159.90, preco:124.90, decantOriginal:19.90, decant:16.90, notas:{topo:"Mandarina, Damasco, Pêssego", coracao:"Morango Silvestre, Jasmim", fundo:"Patchouli, Madeira de Âmbar, Musgo, Cedro"}},
-    {insp:"La Vie Est Belle",  nome:"Felicidade", linha:"feminino",  categoria:"classico", blurb:"Doçura quente que abraça e não sai da lembrança.", combina:"Mulheres que querem um perfume doce, quente e \"abraçador\" — marca presença sem ser agressivo.", precoOriginal:159.90, preco:124.90, decantOriginal:19.90, decant:16.90, notas:{topo:"Groselha Preta, Pera", coracao:"Íris, Jasmim, Flor de Laranjeira", fundo:"Pralinê, Baunilha, Patchouli, Fava Tonka"}},
-    {insp:"Black Opium",       nome:"Vício",      linha:"feminino",  categoria:"classico", blurb:"Café, baunilha e uma dose de vício assumido.", combina:"Noite, festa, quem gosta de algo intenso e viciante (literalmente tem nota de café).", precoOriginal:159.90, preco:124.90, decantOriginal:19.90, decant:16.90, notas:{topo:"Pera, Pimenta Rosa, Flor de Laranjeira", coracao:"Café, Jasmim, Amêndoa Amarga, Alcaçuz", fundo:"Baunilha, Patchouli, Madeira de Cashmere, Cedro"}},
-    {insp:"J'adore",           nome:"Adoração",   linha:"feminino",  categoria:"classico", blurb:"Clássico atemporal. Elegância que nunca sai de moda.", combina:"Clássico atemporal, elegante, ótimo pra quem trabalha em ambiente formal.", precoOriginal:159.90, preco:124.90, decantOriginal:19.90, decant:16.90, notas:{topo:"Bergamota, Pera, Melão", coracao:"Rosa, Jasmim, Orquídea", fundo:"Almíscar, Cedro, Baunilha"}},
-    {insp:"Flowerbomb",        nome:"Explosão",   linha:"feminino",  categoria:"classico", blurb:"Floral com peso. Impossível passar despercebida.", combina:"Personalidade forte, feminino mas com \"peso\" — não passa despercebida.", precoOriginal:199.90, preco:159.90, decantOriginal:23.90, decant:19.90, notas:{topo:"Bergamota, Chá Verde, Osmanthus", coracao:"Jasmim, Rosa Centifolia, Orquídea", fundo:"Pralinê, Patchouli, Baunilha"}},
+  const ESSENCIAS = [
+    {insp:"Miss Dior",         nome:"Delicadeza", linha:"feminino",  categoria:"classico", blurb:"Romance floral, delicadeza que não perde a força.", combina:"Quem gosta de um floral doce e romântico, sem ser enjoativo. Perfeito pro dia a dia elegante.", preco:124.90, decant:16.90, notas:{topo:"Mandarina, Damasco, Pêssego", coracao:"Morango Silvestre, Jasmim", fundo:"Patchouli, Madeira de Âmbar, Musgo, Cedro"}},
+    {insp:"La Vie Est Belle",  nome:"Felicidade", linha:"feminino",  categoria:"classico", blurb:"Doçura quente que abraça e não sai da lembrança.", combina:"Mulheres que querem um perfume doce, quente e \"abraçador\" — marca presença sem ser agressivo.", preco:124.90, decant:16.90, notas:{topo:"Groselha Preta, Pera", coracao:"Íris, Jasmim, Flor de Laranjeira", fundo:"Pralinê, Baunilha, Patchouli, Fava Tonka"}},
+    {insp:"Black Opium",       nome:"Vício",      linha:"feminino",  categoria:"classico", blurb:"Café, baunilha e uma dose de vício assumido.", combina:"Noite, festa, quem gosta de algo intenso e viciante (literalmente tem nota de café).", preco:124.90, decant:16.90, notas:{topo:"Pera, Pimenta Rosa, Flor de Laranjeira", coracao:"Café, Jasmim, Amêndoa Amarga, Alcaçuz", fundo:"Baunilha, Patchouli, Madeira de Cashmere, Cedro"}},
+    {insp:"J'adore",           nome:"Adoração",   linha:"feminino",  categoria:"classico", blurb:"Clássico atemporal. Elegância que nunca sai de moda.", combina:"Clássico atemporal, elegante, ótimo pra quem trabalha em ambiente formal.", preco:124.90, decant:16.90, notas:{topo:"Bergamota, Pera, Melão", coracao:"Rosa, Jasmim, Orquídea", fundo:"Almíscar, Cedro, Baunilha"}},
+    {insp:"Flowerbomb",        nome:"Explosão",   linha:"feminino",  categoria:"classico", blurb:"Floral com peso. Impossível passar despercebida.", combina:"Personalidade forte, feminino mas com \"peso\" — não passa despercebida.", preco:159.90, decant:19.90, notas:{topo:"Bergamota, Chá Verde, Osmanthus", coracao:"Jasmim, Rosa Centifolia, Orquídea", fundo:"Pralinê, Patchouli, Baunilha"}},
 
-    {insp:"Bleu de Chanel",    nome:"Elegância",  linha:"masculino", categoria:"classico", blurb:"Versátil, discreto, o coringa de qualquer ocasião.", combina:"Versátil, do trabalho ao jantar — o \"coringa\" masculino.", precoOriginal:159.90, preco:124.90, decantOriginal:19.90, decant:16.90, notas:{topo:"Limão, Hortelã, Toranja Rosa", coracao:"Gengibre, Noz-moscada, Jasmim", fundo:"Incenso, Cedro, Sândalo, Labdanum"}},
-    {insp:"One Million",       nome:"Fortuna",    linha:"masculino", categoria:"classico", blurb:"Especiado e chamativo. Presença que não passa batido.", combina:"Presença forte, chamativo, ótimo pra sair à noite.", precoOriginal:159.90, preco:124.90, decantOriginal:19.90, decant:16.90, notas:{topo:"Toranja, Menta, Sangue de Dragão", coracao:"Canela, Especiarias, Rosa", fundo:"Couro, Âmbar, Patchouli"}},
-    {insp:"Eros",              nome:"Conquista",  linha:"masculino", categoria:"classico", blurb:"Energia jovem, sedução direta ao ponto.", combina:"Energia jovem, sedutor, dia e noite.", precoOriginal:159.90, preco:124.90, decantOriginal:19.90, decant:16.90, notas:{topo:"Hortelã, Maçã Verde, Limão", coracao:"Baunilha Tahitiana, Sálvia, Gerânio", fundo:"Madeira Âmbar, Musgo de Carvalho, Fava Tonka"}},
-    {insp:"Polo Blue",         nome:"Clássico",   linha:"masculino", categoria:"classico", blurb:"Fresco e aquático. Verão o ano inteiro.", combina:"Verão, casual, ambiente de trabalho leve — bem discreto.", precoOriginal:159.90, preco:124.90, decantOriginal:19.90, decant:16.90, notas:{topo:"Melão, Pepino, Manjericão", coracao:"Sálvia, Gerânio, Notas Marinhas", fundo:"Almíscar, Musgo de Carvalho, Cedro"}},
-    {insp:"Le Male",           nome:"Rebeldia",   linha:"masculino", categoria:"classico", blurb:"Doce-especiado, ousado, impossível de confundir.", combina:"Clássico ousado, doce-especiado, marca registrada facilmente reconhecível.", precoOriginal:159.90, preco:124.90, decantOriginal:19.90, decant:16.90, notas:{topo:"Hortelã, Lavanda, Bergamota", coracao:"Canela, Baunilha, Sálvia", fundo:"Âmbar, Baunilha, Almíscar, Fava Tonka"}},
-    {insp:"Fahrenheit",        nome:"Autêntico",  linha:"masculino", categoria:"classico", blurb:"Único e marcante. Não é pra todo mundo — e tudo bem.", combina:"Personalidade forte e única — tem uma nota de couro bem marcante, não é pra todo mundo, mas quem gosta, ama.", precoOriginal:159.90, preco:124.90, decantOriginal:19.90, decant:16.90, notas:{topo:"Lavanda, Tangerina, Flor de Noz-moscada, Cedro, Bergamota, Camomila", coracao:"Noz-moscada, Madressilva, Cravo, Sândalo, Violeta, Jasmim", fundo:"Couro, Fava Tonka, Âmbar, Patchouli, Almíscar, Vetiver"}},
+    {insp:"Bleu de Chanel",    nome:"Elegância",  linha:"masculino", categoria:"classico", blurb:"Versátil, discreto, o coringa de qualquer ocasião.", combina:"Versátil, do trabalho ao jantar — o \"coringa\" masculino.", preco:124.90, decant:16.90, notas:{topo:"Limão, Hortelã, Toranja Rosa", coracao:"Gengibre, Noz-moscada, Jasmim", fundo:"Incenso, Cedro, Sândalo, Labdanum"}},
+    {insp:"One Million",       nome:"Fortuna",    linha:"masculino", categoria:"classico", blurb:"Especiado e chamativo. Presença que não passa batido.", combina:"Presença forte, chamativo, ótimo pra sair à noite.", preco:124.90, decant:16.90, notas:{topo:"Toranja, Menta, Sangue de Dragão", coracao:"Canela, Especiarias, Rosa", fundo:"Couro, Âmbar, Patchouli"}},
+    {insp:"Eros",              nome:"Conquista",  linha:"masculino", categoria:"classico", blurb:"Energia jovem, sedução direta ao ponto.", combina:"Energia jovem, sedutor, dia e noite.", preco:124.90, decant:16.90, notas:{topo:"Hortelã, Maçã Verde, Limão", coracao:"Baunilha Tahitiana, Sálvia, Gerânio", fundo:"Madeira Âmbar, Musgo de Carvalho, Fava Tonka"}},
+    {insp:"Polo Blue",         nome:"Clássico",   linha:"masculino", categoria:"classico", blurb:"Fresco e aquático. Verão o ano inteiro.", combina:"Verão, casual, ambiente de trabalho leve — bem discreto.", preco:124.90, decant:16.90, notas:{topo:"Melão, Pepino, Manjericão", coracao:"Sálvia, Gerânio, Notas Marinhas", fundo:"Almíscar, Musgo de Carvalho, Cedro"}},
+    {insp:"Le Male",           nome:"Rebeldia",   linha:"masculino", categoria:"classico", blurb:"Doce-especiado, ousado, impossível de confundir.", combina:"Clássico ousado, doce-especiado, marca registrada facilmente reconhecível.", preco:124.90, decant:16.90, notas:{topo:"Hortelã, Lavanda, Bergamota", coracao:"Canela, Baunilha, Sálvia", fundo:"Âmbar, Baunilha, Almíscar, Fava Tonka"}},
+    {insp:"Fahrenheit",        nome:"Autêntico",  linha:"masculino", categoria:"classico", blurb:"Único e marcante. Não é pra todo mundo — e tudo bem.", combina:"Personalidade forte e única — tem uma nota de couro bem marcante, não é pra todo mundo, mas quem gosta, ama.", preco:124.90, decant:16.90, notas:{topo:"Lavanda, Tangerina, Flor de Noz-moscada, Cedro, Bergamota, Camomila", coracao:"Noz-moscada, Madressilva, Cravo, Sândalo, Violeta, Jasmim", fundo:"Couro, Fava Tonka, Âmbar, Patchouli, Almíscar, Vetiver"}},
 
-    {insp:"Baccarat Rouge 540",nome:"Âmbar Raro", linha:"unissex",   categoria:"nicho", blurb:"Doce, amadeirado, viciante. O queridinho do momento.", combina:"Presença luxuosa e doce-amadeirada, virou \"queridinho\" das redes sociais — reconhecível de longe.", precoOriginal:199.90, preco:159.90, decantOriginal:23.90, decant:19.90, notas:{topo:"Açafrão, Jasmim", coracao:"Madeira de Âmbar, Âmbar Cinzento, Hedione", fundo:"Resina de Abeto, Cedro, Açúcar, Ambroxan"}},
-    {insp:"Santal 33",         nome:"Deserto",    linha:"unissex",   categoria:"nicho", blurb:"Minimalista e inconfundível. O cheiro que todo mundo pergunta qual é.", combina:"Minimalista, sofisticado, o \"cheiro de Nova York\" — discreto mas inconfundível.", precoOriginal:199.90, preco:159.90, decantOriginal:23.90, decant:19.90, notas:{topo:"Cardamomo, Violeta, Íris", coracao:"Sândalo, Ambrox", fundo:"Cedro, Couro"}},
-    {insp:"Tobacco Vanille",   nome:"Charuto",    linha:"unissex",   categoria:"nicho", blurb:"Quente, encorpado, para quem gosta de presença densa.", combina:"Outono/inverno, ambientes fechados e aconchegantes, personalidade marcante e quente.", precoOriginal:199.90, preco:159.90, decantOriginal:23.90, decant:19.90, notas:{topo:"Tabaco, Especiarias", coracao:"Baunilha, Cacau, Fava Tonka", fundo:"Madeira Seca, Frutas Secas"}},
-    {insp:"Bvlgari Black",     nome:"Enigma",     linha:"unissex",   categoria:"classico", blurb:"Diferente de tudo que você já sentiu. Vicia.", combina:"Cheiro de \"pneu novo/borracha\" que vicia, bem andrógino.", precoOriginal:159.90, preco:124.90, decantOriginal:19.90, decant:16.90, notas:{topo:"Chá Defumado", coracao:"Borracha, Ambrette", fundo:"Baunilha, Almíscar"}},
-    {insp:"CK One",            nome:"Livre",      linha:"unissex",   categoria:"classico", blurb:"Leve, fresco, para qualquer hora do dia.", combina:"Leve, fresco, o clássico dos anos 90 — perfeito pra qualquer hora do dia.", precoOriginal:159.90, preco:124.90, decantOriginal:19.90, decant:16.90, notas:{topo:"Bergamota, Cardamomo, Abacaxi", coracao:"Chá Verde, Violeta, Noz-moscada", fundo:"Almíscar, Âmbar, Sândalo"}},
+    {insp:"Baccarat Rouge 540",nome:"Âmbar Raro", linha:"unissex",   categoria:"nicho", blurb:"Doce, amadeirado, viciante. O queridinho do momento.", combina:"Presença luxuosa e doce-amadeirada, virou \"queridinho\" das redes sociais — reconhecível de longe.", preco:159.90, decant:19.90, notas:{topo:"Açafrão, Jasmim", coracao:"Madeira de Âmbar, Âmbar Cinzento, Hedione", fundo:"Resina de Abeto, Cedro, Açúcar, Ambroxan"}},
+    {insp:"Santal 33",         nome:"Deserto",    linha:"unissex",   categoria:"nicho", blurb:"Minimalista e inconfundível. O cheiro que todo mundo pergunta qual é.", combina:"Minimalista, sofisticado, o \"cheiro de Nova York\" — discreto mas inconfundível.", preco:159.90, decant:19.90, notas:{topo:"Cardamomo, Violeta, Íris", coracao:"Sândalo, Ambrox", fundo:"Cedro, Couro"}},
+    {insp:"Tobacco Vanille",   nome:"Charuto",    linha:"unissex",   categoria:"nicho", blurb:"Quente, encorpado, para quem gosta de presença densa.", combina:"Outono/inverno, ambientes fechados e aconchegantes, personalidade marcante e quente.", preco:159.90, decant:19.90, notas:{topo:"Tabaco, Especiarias", coracao:"Baunilha, Cacau, Fava Tonka", fundo:"Madeira Seca, Frutas Secas"}},
+    {insp:"Bvlgari Black",     nome:"Enigma",     linha:"unissex",   categoria:"classico", blurb:"Diferente de tudo que você já sentiu. Vicia.", combina:"Cheiro de \"pneu novo/borracha\" que vicia, bem andrógino.", preco:124.90, decant:16.90, notas:{topo:"Chá Defumado", coracao:"Borracha, Ambrette", fundo:"Baunilha, Almíscar"}},
+    {insp:"CK One",            nome:"Livre",      linha:"unissex",   categoria:"classico", blurb:"Leve, fresco, para qualquer hora do dia.", combina:"Leve, fresco, o clássico dos anos 90 — perfeito pra qualquer hora do dia.", preco:124.90, decant:16.90, notas:{topo:"Bergamota, Cardamomo, Abacaxi", coracao:"Chá Verde, Violeta, Noz-moscada", fundo:"Almíscar, Âmbar, Sândalo"}},
   ];
 </script>
 
@@ -798,7 +803,7 @@
       <span class="eyebrow">VERAZ ESSÊNCIAS</span>
       <h2>Nossa<br><span class="gold-text">Loja Virtual</span></h2>
       <p>10 essências de alta concentração, testers pra experimentar sem medo, e presença que fica no ar. Tudo num só lugar.</p>
-      <a href="#essencias" class="btn-gold">Ver Catálogo</a>
+      <a href="#perfumes" class="btn-gold">Ver Catálogo</a>
     </div>
     <div class="store-banner-visual">
       <img src="frasco-real.jpeg?v=2" alt="Frasco VERAZ Presença, inspirado em Coco Mademoiselle">
@@ -882,14 +887,14 @@
     <span class="eyebrow">ESSÊNCIAS</span>
     <p class="tag">"A verdade tem um cheiro."</p>
     <div class="hero-ctas">
-      <a href="#essencias" class="btn-gold">Ver essências</a>
+      <a href="#perfumes" class="btn-gold">Ver essências</a>
       <a href="#decants" class="btn-outline">Pedir um tester</a>
     </div>
     <p style="max-width:600px; margin:38px auto 0; font-size:15px; color:rgba(251,243,228,0.65); line-height:1.6;">Essência de alta concentração. Sem pagar pelo nome estampado no vidro — só pelo cheiro que realmente fica.</p>
   </div>
 </section>
 
-<section class="catalog" id="essencias">
+<section class="catalog" id="perfumes">
   <div class="sparkle-field light">
     <span class="s s1"></span><span class="s s2"></span><span class="s s3"></span><span class="s s4"></span><span class="s s5"></span>
     <span class="s s6"></span><span class="s s7"></span><span class="s s8"></span><span class="s s9"></span><span class="s s10"></span>
@@ -904,11 +909,36 @@
       <span class="line-heading-diamond">◆</span> Perfumes Masculinos
     </div>
     <div class="grid" id="gridMasc"></div>
+  </div>
+</section>
 
-    <div class="line-heading unissex-heading">
-      <span class="line-heading-diamond">◆</span> Perfumes Unissex
+<section class="essencias-catalog" id="essencias">
+  <div class="sparkle-field light">
+    <span class="s s1"></span><span class="s s2"></span><span class="s s3"></span><span class="s s4"></span><span class="s s5"></span>
+    <span class="s s6"></span><span class="s s7"></span><span class="s s8"></span><span class="s s9"></span><span class="s s10"></span>
+  </div>
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">CATÁLOGO COMPLETO</span>
+      <h2>Nossas Essências</h2>
+      <p>Mais opções, mesma qualidade — escolha a categoria.</p>
     </div>
-    <div class="grid" id="gridUnissex"></div>
+
+    <div class="mv-tabs">
+      <button class="ess-tab active" data-esstab="feminino">Femininas</button>
+      <button class="ess-tab" data-esstab="masculino">Masculinas</button>
+      <button class="ess-tab" data-esstab="unissex">Unissex</button>
+    </div>
+
+    <div class="ess-panel active" data-esspanel="feminino">
+      <div class="grid" id="gridEssFem"></div>
+    </div>
+    <div class="ess-panel" data-esspanel="masculino">
+      <div class="grid" id="gridEssMasc"></div>
+    </div>
+    <div class="ess-panel" data-esspanel="unissex">
+      <div class="grid" id="gridEssUnissex"></div>
+    </div>
   </div>
 </section>
 
@@ -1206,15 +1236,17 @@
 
   function fmt(v){ return "R$ " + v.toFixed(2).replace('.', ','); }
 
-  function renderCards(){
-    [['gridFem','feminino'], ['gridMasc','masculino'], ['gridUnissex','unissex']].forEach(([gridId, linha])=>{
+  function renderProductGrid(list, gridMap, source){
+    gridMap.forEach(([gridId, linha])=>{
       const targetGrid = document.getElementById(gridId);
+      if(!targetGrid) return;
       targetGrid.innerHTML = "";
-      PRODUCTS.forEach((p, idx) => {
+      list.forEach((p, idx) => {
         if(p.linha !== linha) return;
         const card = document.createElement('div');
         card.className = `card ${p.linha}`;
         card.dataset.idx = idx;
+        card.dataset.source = source;
         const iconHtml = p.foto ? `
           <div class="card-photo-frame"><img class="card-photo" src="${p.foto}" alt="Frasco VERAZ ${p.nome}, inspirado em ${p.insp}"></div>
         ` : `
@@ -1243,9 +1275,9 @@
           <div class="insp"><span class="insp-label">Inspirado em</span><span class="insp-name">${p.insp}</span></div>
           <div class="veraz-name">${p.nome} <span class="ml-tag">60ml</span></div>
           <div class="blurb">${p.blurb}</div>
-          <div class="launch-badge">PREÇO DE LANÇAMENTO</div>
+          ${p.precoOriginal ? '<div class="launch-badge">PREÇO DE LANÇAMENTO</div>' : ''}
           <div class="price-row">
-            <span class="price-old">${fmt(p.precoOriginal)}</span>
+            ${p.precoOriginal ? `<span class="price-old">${fmt(p.precoOriginal)}</span>` : ''}
             <span class="price-main">${fmt(p.preco)}</span>
             <span class="price-decant">tester 5ml ${fmt(p.decant)}</span>
           </div>
@@ -1255,7 +1287,23 @@
       });
     });
   }
+  function renderCards(){
+    renderProductGrid(PRODUCTS, [['gridFem','feminino'], ['gridMasc','masculino']], 'main');
+    renderProductGrid(ESSENCIAS, [['gridEssFem','feminino'], ['gridEssMasc','masculino'], ['gridEssUnissex','unissex']], 'ess');
+  }
   renderCards();
+
+  // ---------- Nossas Essências (abas) ----------
+  function switchEssTab(tabName){
+    document.querySelectorAll('.ess-tab').forEach(t => t.classList.toggle('active', t.dataset.esstab === tabName));
+    document.querySelectorAll('.ess-panel').forEach(p => p.classList.toggle('active', p.dataset.esspanel === tabName));
+  }
+  document.querySelectorAll('.ess-tab').forEach(tab=>{
+    tab.addEventListener('click', (e)=>{
+      e.preventDefault();
+      switchEssTab(tab.dataset.esstab);
+    });
+  });
 
   // ---------- Mais da VERAZ (abas) ----------
   function switchMvTab(tabName){
@@ -1287,7 +1335,8 @@
   document.addEventListener('click', (e)=>{
     const card = e.target.closest('.card');
     if(!card) return;
-    currentProduct = PRODUCTS[card.dataset.idx];
+    const sourceList = card.dataset.source === 'ess' ? ESSENCIAS : PRODUCTS;
+    currentProduct = sourceList[card.dataset.idx];
     currentSize = 'frasco';
     currentQty = 1;
     openModal();
