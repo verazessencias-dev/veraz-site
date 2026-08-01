@@ -66,9 +66,6 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
       <circle cx="493" cy="155" r="3" fill="currentColor"/></svg>
         `;
         card.innerHTML = `
-          <span class="spark" style="--dx:-24px"></span>
-          <span class="spark" style="--dx:6px"></span>
-          <span class="spark" style="--dx:28px"></span>
           ${p.categoria === 'nicho' ? '<div class="nicho-badge">NICHO</div>' : ''}
           ${iconHtml}
           <div class="insp"><span class="insp-label">Inspirado em</span><span class="insp-name">${p.insp}</span></div>
