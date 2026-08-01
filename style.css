@@ -391,18 +391,18 @@
   .card .buy-btn:hover{background:var(--wine);}
 
   .fathers-day{
-    background:linear-gradient(160deg, #241a0d 0%, #1B120A 55%, #2b1c10 100%);
+    background:linear-gradient(160deg, #B8860B 0%, #C9972B 35%, #E8B84B 75%, #F0C868 100%);
     padding:80px 0; position:relative; overflow:hidden;
   }
   .fd-glow{
     position:absolute; top:-16%; left:50%; transform:translateX(-50%);
     width:620px; height:620px; border-radius:50%;
-    background:radial-gradient(circle, rgba(201,151,43,0.32) 0%, rgba(201,151,43,0) 68%);
+    background:radial-gradient(circle, rgba(122,31,43,0.18) 0%, rgba(122,31,43,0) 68%);
     pointer-events:none;
   }
-  .fathers-day .section-head .eyebrow{color:var(--gold-bright);}
-  .fathers-day .section-head h2{color:var(--cream);}
-  .fathers-day .section-head p{color:rgba(251,243,228,0.75);}
+  .fathers-day .section-head .eyebrow{color:var(--wine);}
+  .fathers-day .section-head h2{color:var(--ink);}
+  .fathers-day .section-head p{color:rgba(27,18,10,0.75);}
   .fd-spotlight{
     padding:0; margin-bottom:56px; position:relative; overflow:hidden;
     text-align:center;
