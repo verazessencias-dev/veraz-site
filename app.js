@@ -130,6 +130,22 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
   }
   renderTesterList();
 
+  // ---------- Revelação suave ao rolar a página ----------
+  (function(){
+    const revealTargets = document.querySelectorAll('.section-head, .card, .club-card, .tester-row, .stat-box');
+    if(!('IntersectionObserver' in window) || revealTargets.length === 0) return;
+    revealTargets.forEach(el => el.classList.add('reveal-init'));
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          entry.target.classList.add('reveal-in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    revealTargets.forEach(el => io.observe(el));
+  })();
+
   // ---------- Abre automaticamente o produto vindo do Diagnóstico ----------
   (function(){
     const params = new URLSearchParams(window.location.search);
