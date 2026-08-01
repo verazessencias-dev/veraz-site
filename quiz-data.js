@@ -65,86 +65,86 @@ const QUIZ_PRODUCTS = [
 
 const QUIZ_QUESTIONS = [
   {
-    q: "Você está buscando um perfume de uso...",
+    q: "Esse perfume é para você usar sendo...",
     options: [
-      {label:"Feminino", effect:{linha:"feminino"}},
-      {label:"Masculino", effect:{linha:"masculino"}},
-      {label:"Unissex ou sem preferência", effect:{linha:"qualquer"}},
+      {label:"Mulher", effect:{linha:"feminino"}},
+      {label:"Homem", effect:{linha:"masculino"}},
+      {label:"Tanto faz / qualquer um", effect:{linha:"qualquer"}},
     ]
   },
   {
-    q: "Qual frase mais combina com você?",
+    q: "Você quer que o perfume seja sentido...",
     options: [
-      {label:"Gosto de ser lembrada(o) pelo perfume que uso", effect:{intensidade:{intenso:2}}},
-      {label:"Prefiro algo discreto — só quem chega perto sente", effect:{intensidade:{leve:2}}},
-      {label:"Equilíbrio é tudo: nem fraco, nem exagerado", effect:{intensidade:{moderado:2}}},
+      {label:"Bem forte — quero que sintam de longe", effect:{intensidade:{intenso:2}}},
+      {label:"Bem suave — só quem chegar perto sente", effect:{intensidade:{leve:2}}},
+      {label:"No meio termo — nem fraco, nem forte demais", effect:{intensidade:{moderado:2}}},
     ]
   },
   {
-    q: "Pra qual momento você mais vai usar esse perfume?",
+    q: "Onde você mais vai usar esse perfume?",
     options: [
-      {label:"Dia a dia, trabalho, rotina", effect:{ocasiao:{dia:1, trabalho:2}}},
-      {label:"Noite, festas, sair", effect:{ocasiao:{noite:2}}},
-      {label:"Quero um só perfume pra tudo", effect:{ocasiao:{versatil:2}}},
+      {label:"No trabalho e no dia a dia", effect:{ocasiao:{dia:1, trabalho:2}}},
+      {label:"Pra sair à noite e ir em festas", effect:{ocasiao:{noite:2}}},
+      {label:"Em qualquer lugar — quero um só perfume pra tudo", effect:{ocasiao:{versatil:2}}},
     ]
   },
   {
-    q: "Qual dessas notas mais te atrai?",
+    q: "Qual desses cheiros você mais gosta?",
     options: [
-      {label:"Floral — rosas, jasmim, flores brancas", effect:{familia:{floral:3}}},
-      {label:"Doce e adocicado — baunilha, caramelo, frutas", effect:{familia:{doce:3}}},
-      {label:"Amadeirado — cedro, sândalo, musgo", effect:{familia:{amadeirado:3}}},
-      {label:"Fresco e cítrico — bergamota, notas marinhas", effect:{familia:{fresco:3}}},
-      {label:"Especiado — canela, âmbar, especiarias", effect:{familia:{especiado:3}}},
+      {label:"Cheiro de flores", effect:{familia:{floral:3}}},
+      {label:"Cheiro doce, tipo sobremesa ou baunilha", effect:{familia:{doce:3}}},
+      {label:"Cheiro de madeira, mais sério e encorpado", effect:{familia:{amadeirado:3}}},
+      {label:"Cheiro fresco, tipo limão ou dia de praia", effect:{familia:{fresco:3}}},
+      {label:"Cheiro de tempero quente, tipo canela", effect:{familia:{especiado:3}}},
     ]
   },
   {
-    q: "Se seu perfume fosse uma estação do ano, seria...",
+    q: "Você prefere um perfume...",
     options: [
-      {label:"Verão — leve e refrescante", effect:{familia:{fresco:2, aquatico:2}, intensidade:{leve:1}}},
-      {label:"Inverno — quente e envolvente", effect:{familia:{amadeirado:1, oriental:1}, intensidade:{intenso:1}}},
-      {label:"O ano inteiro, sem depender do clima", effect:{ocasiao:{versatil:2}}},
+      {label:"Leve e refrescante, tipo dia de verão", effect:{familia:{fresco:2, aquatico:2}, intensidade:{leve:1}}},
+      {label:"Quentinho e envolvente, tipo dia de frio", effect:{familia:{amadeirado:1, oriental:1}, intensidade:{intenso:1}}},
+      {label:"Não ligo pro clima — quero um só pro ano todo", effect:{ocasiao:{versatil:2}}},
     ]
   },
   {
-    q: "Como você quer que as pessoas se sintam perto de você?",
+    q: "Quando alguém sentir seu perfume, você quer que a pessoa fique...",
     options: [
-      {label:"Encantadas — romântico e delicado", effect:{familia:{floral:2}}},
-      {label:"Curiosas — querendo saber o que é", effect:{nicho:3}},
-      {label:"Confortáveis — é aconchegante", effect:{familia:{gourmand:2, doce:1}}},
-      {label:"Revigoradas — é leve e energizante", effect:{familia:{fresco:2}}},
+      {label:"Encantada, achando romântico", effect:{familia:{floral:2}}},
+      {label:"Curiosa, perguntando o que é", effect:{nicho:3}},
+      {label:"Relaxada, achando gostoso e aconchegante", effect:{familia:{gourmand:2, doce:1}}},
+      {label:"Com sensação de frescor, bem-disposta", effect:{familia:{fresco:2}}},
     ]
   },
   {
-    q: "Você prefere um perfume que...",
+    q: "Você prefere um perfume...",
     options: [
-      {label:"Todo mundo já conhece e ama — clássico garantido", effect:{nicho:-2}},
-      {label:"Poucas pessoas têm — bem exclusivo", effect:{nicho:3}},
+      {label:"Famoso, que muita gente já usa e conhece", effect:{nicho:-2}},
+      {label:"Raro, que quase ninguém mais tem", effect:{nicho:3}},
     ]
   },
   {
-    q: "Qual cor combina mais com o perfume que você imagina?",
+    q: "Pensando numa cor pro cheiro que você imagina, seria...",
     options: [
-      {label:"Dourado / âmbar", effect:{familia:{oriental:1, amadeirado:1}}},
-      {label:"Branco / rosa claro", effect:{familia:{floral:2}}},
+      {label:"Dourado", effect:{familia:{oriental:1, amadeirado:1}}},
+      {label:"Branco ou rosa clarinho", effect:{familia:{floral:2}}},
       {label:"Azul", effect:{familia:{aquatico:2, fresco:1}}},
-      {label:"Marrom / terracota", effect:{familia:{amadeirado:2}}},
+      {label:"Marrom", effect:{familia:{amadeirado:2}}},
     ]
   },
   {
-    q: "O que mais importa pra você num perfume?",
+    q: "O que é mais importante pra você num perfume?",
     options: [
-      {label:"Que dure o dia todo sem precisar reaplicar", effect:{intensidade:{intenso:1}}},
-      {label:"Que seja sutil e agradável, sem cansar", effect:{intensidade:{leve:1}}},
-      {label:"Que combine com qualquer roupa ou ocasião", effect:{ocasiao:{versatil:2}}},
+      {label:"Durar o dia todo, sem precisar passar de novo", effect:{intensidade:{intenso:1}}},
+      {label:"Ser leve e agradável, sem incomodar ninguém", effect:{intensidade:{leve:1}}},
+      {label:"Combinar com qualquer roupa e ocasião", effect:{ocasiao:{versatil:2}}},
     ]
   },
   {
-    q: "Por último: qual fase combina mais com você hoje?",
+    q: "Pra fechar: qual dessas frases combina mais com você?",
     options: [
-      {label:"Uma fase clássica e elegante", effect:{familia:{floral:1, amadeirado:1}, nicho:-1}},
-      {label:"Uma fase ousada, quero arriscar", effect:{nicho:2, intensidade:{intenso:1}}},
-      {label:"Uma fase leve, simples, natural", effect:{familia:{fresco:1}, intensidade:{leve:1}}},
+      {label:"Gosto do clássico, do que já é elegante e certeiro", effect:{familia:{floral:1, amadeirado:1}, nicho:-1}},
+      {label:"Gosto de arriscar, de ser diferente", effect:{nicho:2, intensidade:{intenso:1}}},
+      {label:"Gosto do simples, do natural, sem exagero", effect:{familia:{fresco:1}, intensidade:{leve:1}}},
     ]
   },
 ];
@@ -169,9 +169,9 @@ function quizApplyEffect(effect){
 
 function quizBestMatch(){
   let pool = QUIZ_PRODUCTS.filter(p => {
-    if(quizScore.linha === 'feminino') return p.linha === 'feminino' || p.linha === 'unissex';
-    if(quizScore.linha === 'masculino') return p.linha === 'masculino' || p.linha === 'unissex';
-    return true; // "qualquer"
+    if(quizScore.linha === 'feminino') return p.linha === 'feminino';
+    if(quizScore.linha === 'masculino') return p.linha === 'masculino';
+    return true; // "qualquer" — inclui femininos, masculinos e unissex
   });
 
   let best = null, bestScore = -Infinity;
@@ -227,6 +227,18 @@ function quizRenderQuestion(){
   }
 }
 
+const QUIZ_FAMILIA_LABEL = {
+  floral: "flores",
+  doce: "doce",
+  gourmand: "gostoso, tipo sobremesa",
+  amadeirado: "madeira",
+  fresco: "fresco",
+  especiado: "tempero quente",
+  oriental: "encorpado",
+  aquatico: "brisa refrescante",
+  frutado: "frutas",
+};
+
 function quizRenderResult(){
   document.getElementById('quizProgressFill').style.width = '100%';
   document.getElementById('quizProgressLabel').textContent = 'Resultado';
@@ -263,7 +275,7 @@ function quizRenderResult(){
       ${photoHtml}
       <div class="quiz-result-insp">${match.insp}</div>
       <div class="quiz-result-name">${match.nome} · 60ml</div>
-      <p class="quiz-result-blurb">Combina com o seu perfil: presença ${match.intensidade === 'intenso' ? 'marcante' : match.intensidade === 'leve' ? 'discreta' : 'equilibrada'}, com notas ${match.familia.join(' e ')}.</p>
+      <p class="quiz-result-blurb">Combina com você: presença ${match.intensidade === 'intenso' ? 'marcante' : match.intensidade === 'leve' ? 'discreta' : 'equilibrada'}, com cheiro de ${match.familia.map(f => QUIZ_FAMILIA_LABEL[f] || f).join(' e ')}.</p>
       ${priceHtml}
       <a href="${linkHref}" class="btn-gold" style="display:block; margin-top:22px;">Ver esse perfume</a>
       <button class="quiz-restart" id="quizRestartBtn">Refazer o diagnóstico</button>
