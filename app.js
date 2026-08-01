@@ -35,7 +35,7 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
 
   function fmt(v){ return "R$ " + v.toFixed(2).replace('.', ','); }
 
-  function renderProductGrid(list, gridMap, source){
+  function renderProductGrid(list, gridMap, source, showBadge){
     gridMap.forEach(([gridId, linha])=>{
       const targetGrid = document.getElementById(gridId);
       if(!targetGrid) return;
@@ -74,7 +74,7 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
           <div class="insp"><span class="insp-label">Inspirado em</span><span class="insp-name">${p.insp}</span></div>
           <div class="veraz-name">${p.nome} <span class="ml-tag">60ml</span></div>
           <div class="blurb">${p.blurb}</div>
-          ${p.precoOriginal ? '<div class="launch-badge">PREÇO DE LANÇAMENTO</div>' : ''}
+          ${(p.precoOriginal && showBadge) ? '<div class="launch-badge">VALOR EXCLUSIVO</div>' : ''}
           <div class="price-row">
             ${p.precoOriginal ? `<span class="price-old">${fmt(p.precoOriginal)}</span>` : ''}
             <span class="price-main">${fmt(p.preco)}</span>
@@ -87,8 +87,8 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
     });
   }
   function renderCards(){
-    renderProductGrid(PRODUCTS, [['gridFem','feminino'], ['gridMasc','masculino']], 'main');
-    renderProductGrid(ESSENCIAS, [['gridEssFem','feminino'], ['gridEssMasc','masculino'], ['gridEssUnissex','unissex']], 'ess');
+    renderProductGrid(PRODUCTS, [['gridFem','feminino'], ['gridMasc','masculino']], 'main', true);
+    renderProductGrid(ESSENCIAS, [['gridEssFem','feminino'], ['gridEssMasc','masculino'], ['gridEssUnissex','unissex']], 'ess', false);
   }
   renderCards();
 
