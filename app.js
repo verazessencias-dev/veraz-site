@@ -133,6 +133,24 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
   }
   renderTesterList();
 
+  // ---------- Abre automaticamente o produto vindo do Diagnóstico ----------
+  (function(){
+    const params = new URLSearchParams(window.location.search);
+    const produtoNome = params.get('produto');
+    const fonte = params.get('fonte');
+    if(!produtoNome) return;
+    const sourceList = fonte === 'ess' ? ESSENCIAS : PRODUCTS;
+    const found = sourceList.find(p => p.insp === produtoNome);
+    if(found){
+      setTimeout(()=>{
+        currentProduct = found;
+        currentSize = 'frasco';
+        currentQty = 1;
+        openModal();
+      }, 400);
+    }
+  })();
+
   // ---------- Popup promocional de lançamento (só na home, 1x por sessão) ----------
   (function(){
     const promoBackdrop = document.getElementById('promoBackdrop');
