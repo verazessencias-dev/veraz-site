@@ -1,0 +1,134 @@
+/**
+ * VERAZ Essências — Clube VERAZ automatizado
+ * ---------------------------------------------------------
+ * Esse script conta automaticamente quantas vezes cada cliente
+ * comprou (identificado pelo telefone) e permite que o próprio
+ * cliente consulte quantos pontos já tem, direto no site.
+ *
+ * REGRA: a cada 8 compras, o cliente ganha 1 grátis.
+ *
+ * ============================================================
+ * COMO CONFIGURAR (faça isso ANTES de publicar):
+ * ============================================================
+ *
+ * 1. Cria uma planilha NOVA no Google Sheets, só pra isso
+ *    (nome sugerido: "Clube VERAZ - Pontos")
+ *
+ * 2. Na primeira linha (linha 1), coloca esses cabeçalhos,
+ *    um em cada coluna:
+ *    A1: Telefone | B1: Nome | C1: Total de Compras | D1: Última Compra
+ *
+ * 3. Nessa planilha, vai em Extensões → Apps Script
+ *
+ * 4. Apaga o conteúdo padrão e cola o código deste arquivo
+ *
+ * 5. Menu "Implantar" → "Nova implantação" → tipo "App da Web"
+ *    → Executar como "Eu" → Acesso "Qualquer pessoa" → Implantar
+ *
+ * 6. Copia a URL gerada (termina em /exec) e me manda de volta,
+ *    ou cola direto no CONFIG do site (campo clubeApiUrl)
+ *
+ * ============================================================
+ */
+
+const REGRA_PONTOS = 8; // a cada 8 compras, 1 grátis
+
+function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    const phone = normalizarTelefone(data.phone);
+    const name = data.name || '';
+
+    if (!phone) {
+      return jsonResponse({ error: 'Telefone inválido.' });
+    }
+
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Sheet1')
+      || SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+
+    const result = registrarCompra(sheet, phone, name);
+    return jsonResponse(result);
+
+  } catch (err) {
+    return jsonResponse({ error: 'Erro interno: ' + err.toString() });
+  }
+}
+
+function doGet(e) {
+  try {
+    const phone = normalizarTelefone(e.parameter.phone || '');
+    if (!phone) {
+      return jsonResponse({ error: 'Telefone inválido.' });
+    }
+
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Sheet1')
+      || SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+
+    const found = buscarCliente(sheet, phone);
+    if (!found) {
+      return jsonResponse({ found: false });
+    }
+
+    return jsonResponse({
+      found: true,
+      totalCompras: found.total,
+      faltam: Math.max(0, REGRA_PONTOS - (found.total % REGRA_PONTOS || REGRA_PONTOS)),
+      premiosDisponiveis: Math.floor(found.total / REGRA_PONTOS)
+    });
+
+  } catch (err) {
+    return jsonResponse({ error: 'Erro interno: ' + err.toString() });
+  }
+}
+
+// ---------- Funções auxiliares ----------
+
+function normalizarTelefone(phone) {
+  // remove tudo que não é número, pra "11 98166-3107" e "11981663107" serem tratados como o mesmo
+  return String(phone).replace(/\D/g, '');
+}
+
+function buscarCliente(sheet, phone) {
+  const data = sheet.getDataRange().getValues();
+  for (let i = 1; i < data.length; i++) {
+    const rowPhone = normalizarTelefone(data[i][0]);
+    if (rowPhone === phone) {
+      return { row: i + 1, total: Number(data[i][2]) || 0, nome: data[i][1] };
+    }
+  }
+  return null;
+}
+
+function registrarCompra(sheet, phone, name) {
+  const existente = buscarCliente(sheet, phone);
+  const hoje = new Date();
+
+  if (existente) {
+    const novoTotal = existente.total + 1;
+    sheet.getRange(existente.row, 3).setValue(novoTotal); // Total de Compras
+    sheet.getRange(existente.row, 4).setValue(hoje); // Última Compra
+    if (name && !existente.nome) {
+      sheet.getRange(existente.row, 2).setValue(name); // atualiza nome se estava vazio
+    }
+    return {
+      totalCompras: novoTotal,
+      faltam: Math.max(0, REGRA_PONTOS - (novoTotal % REGRA_PONTOS || REGRA_PONTOS)),
+      premiosDisponiveis: Math.floor(novoTotal / REGRA_PONTOS),
+      ganhouAgora: novoTotal % REGRA_PONTOS === 0
+    };
+  } else {
+    sheet.appendRow([phone, name, 1, hoje]);
+    return {
+      totalCompras: 1,
+      faltam: REGRA_PONTOS - 1,
+      premiosDisponiveis: 0,
+      ganhouAgora: false
+    };
+  }
+}
+
+function jsonResponse(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}

@@ -642,11 +642,25 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
     }).catch(err => console.error('Erro ao registrar pedido na planilha:', err));
   }
 
+  function registerLoyaltyPurchase(){
+    if(!CONFIG.clubeApiUrl || CONFIG.clubeApiUrl.indexOf('COLE_AQUI') === 0) return;
+    const phone = document.getElementById('custTelefone').value.trim();
+    const name = document.getElementById('custNome').value.trim();
+    if(!phone) return;
+    fetch(CONFIG.clubeApiUrl, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type': 'text/plain'},
+      body: JSON.stringify({ phone, name }),
+    }).catch(err => console.error('Erro ao registrar ponto no Clube VERAZ:', err));
+  }
+
   document.getElementById('wppBuyBtn').addEventListener('click', (e)=>{
     if(!validateDelivery()){ e.preventDefault(); return; }
     updateCartTotal();
     e.target.href = document.getElementById('wppBuyBtn').href;
     sendOrderToSheet();
+    registerLoyaltyPurchase();
   });
 
   document.querySelectorAll('.pay-tab').forEach(tab=>{
@@ -659,9 +673,46 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
       if(tab.dataset.pay === 'pix'){
         renderPix();
         sendOrderToSheet();
+        registerLoyaltyPurchase();
       }
     });
   });
+
+  const loyaltyBtn = document.getElementById('loyaltyCheckBtn');
+  if(loyaltyBtn){
+    loyaltyBtn.addEventListener('click', async ()=>{
+      const phoneInput = document.getElementById('loyaltyPhone');
+      const resultEl = document.getElementById('loyaltyResult');
+      const phone = phoneInput.value.trim();
+      if(!phone){
+        resultEl.textContent = 'Digita seu WhatsApp pra consultar.';
+        resultEl.className = 'loyalty-result show';
+        return;
+      }
+      if(!CONFIG.clubeApiUrl || CONFIG.clubeApiUrl.indexOf('COLE_AQUI') === 0){
+        resultEl.textContent = 'Consulta ainda não disponível — fala com a gente no WhatsApp.';
+        resultEl.className = 'loyalty-result show';
+        return;
+      }
+      resultEl.textContent = 'Consultando...';
+      resultEl.className = 'loyalty-result show';
+      try{
+        const res = await fetch(`${CONFIG.clubeApiUrl}?phone=${encodeURIComponent(phone)}`);
+        const data = await res.json();
+        if(!data.found){
+          resultEl.textContent = 'Não encontramos compras com esse número ainda. Depois da sua primeira compra, seus pontos aparecem aqui!';
+        }else if(data.premiosDisponiveis > 0){
+          resultEl.textContent = `🎁 Você tem ${data.premiosDisponiveis} produto(s) grátis disponível(is)! Total de ${data.totalCompras} compras. Chama no WhatsApp pra resgatar.`;
+        }else{
+          resultEl.textContent = `Você já comprou ${data.totalCompras}x — faltam ${data.faltam} pra ganhar uma essência grátis!`;
+        }
+      }catch(err){
+        resultEl.textContent = 'Não consegui consultar agora. Tenta de novo em instantes.';
+        console.error('Erro ao consultar Clube VERAZ:', err);
+      }
+    });
+  }
+
 
   function crc16(payload){
     let crc = 0xFFFF;

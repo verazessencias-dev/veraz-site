@@ -28,6 +28,7 @@
     merchantName:  "VERAZ ESSENCIAS",
     merchantCity:  "SAO PAULO",
     sheetsUrl:     "https://script.google.com/macros/s/AKfycbyZHa2VsS6VAwr_Gfp-xVxlrPi-2SAYXS91Uju_4tMRbcKJymrA1QUY3j1TT-D858_f/exec",
+    clubeApiUrl:   "COLE_AQUI_A_URL_DO_APPS_SCRIPT_DO_CLUBE_VERAZ",
   };
 
   const SHIPPING = {
@@ -119,7 +120,7 @@
           <span class="stamp filled">✓</span><span class="stamp filled">✓</span><span class="stamp">3</span><span class="stamp">4</span>
           <span class="stamp">5</span><span class="stamp">6</span><span class="stamp">7</span><span class="stamp">🎁</span>
         </div>
-        <div class="tag">CONTROLE PELO WHATSAPP</div>
+        <div class="tag">AGORA AUTOMÁTICO</div>
       </div>
 
       <div class="club-card">
@@ -135,6 +136,16 @@
         <p>Levando dois produtos ou mais no mesmo pedido (qualquer combinação), 10% de desconto automático.</p>
         <div class="tag">APLICADO NA HORA</div>
       </div>
+    </div>
+
+    <div class="loyalty-check">
+      <h3>Consultar meus pontos</h3>
+      <p>Digite o WhatsApp que você usou nas compras pra ver quantas essências já contam pro seu prêmio.</p>
+      <div class="loyalty-check-row">
+        <input type="tel" id="loyaltyPhone" placeholder="(11) 98166-3107">
+        <button id="loyaltyCheckBtn">Consultar</button>
+      </div>
+      <div id="loyaltyResult" class="loyalty-result"></div>
     </div>
 
     <p class="club-note">Seu histórico de compras e indicações fica registrado com a gente — qualquer dúvida sobre seu progresso no clube, é só chamar no WhatsApp.</p>
