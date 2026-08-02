@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>VERAZ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,500;1,600&family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1B120A; --cream:#F7E8C4; --cream-deep:#EDD9A0;
+    --gold:#C9972B; --gold-strong:#B8860B; --gold-bright:#E8B84B; --gold-deep:#8C6A2E;
+    --wine:#7A1F2B; --line:rgba(27,18,10,0.14);
+    --font-display:'Playfair Display', serif; --font-body:'Work Sans', sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:var(--font-body); background:var(--cream); color:var(--ink); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;}
+
+  .gate{max-width:360px; width:100%; text-align:center;}
+  .gate h1{font-family:var(--font-display); font-weight:700; font-size:28px; margin-bottom:8px;}
+  .gate p{font-size:14px; color:#5b4a38; margin-bottom:22px;}
+  .gate input{
+    width:100%; padding:14px 16px; border-radius:2px; border:1px solid var(--line);
+    font-size:16px; text-align:center; letter-spacing:2px; margin-bottom:14px;
+  }
+  .gate button{
+    width:100%; padding:14px; border-radius:2px; background:var(--ink); color:var(--cream);
+    font-weight:600; font-size:13px; letter-spacing:1.4px; text-transform:uppercase; cursor:pointer;
+  }
+  .gate-error{color:var(--wine); font-size:13px; margin-top:12px; display:none;}
+
+  .dash{max-width:720px; width:100%; display:none;}
+  .dash-head{text-align:center; margin-bottom:36px;}
+  .dash-head h1{font-family:var(--font-display); font-weight:700; font-size:32px;}
+  .dash-head p{font-size:13px; color:#8a7b64; margin-top:6px;}
+  .dash-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media (max-width:560px){ .dash-grid{grid-template-columns:1fr;} }
+  .kpi{background:#fff; border:1px solid var(--line); border-radius:4px; padding:26px 22px;}
+  .kpi-label{font-size:11.5px; letter-spacing:1.4px; text-transform:uppercase; color:#8a7b64; font-weight:600;}
+  .kpi-value{font-family:var(--font-display); font-weight:700; font-size:40px; color:var(--gold-strong); margin-top:8px;}
+  .kpi-note{font-size:12.5px; color:#a89a84; margin-top:6px;}
+  .dash-loading{text-align:center; color:#8a7b64; font-size:14px; padding:40px 0;}
+  .dash-updated{text-align:center; font-size:12px; color:#a89a84; margin-top:28px;}
+  .dash-refresh{
+    display:block; margin:20px auto 0; padding:10px 20px; border-radius:2px;
+    background:none; border:1px solid var(--ink); color:var(--ink); font-size:12px;
+    letter-spacing:1px; text-transform:uppercase; cursor:pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="gate" id="gate">
+  <h1>VERAZ</h1>
+  <p>Painel privado — digite a senha</p>
+  <input type="password" id="gatePassword" placeholder="••••••" inputmode="numeric">
+  <button id="gateBtn">Entrar</button>
+  <p class="gate-error" id="gateError">Senha incorreta.</p>
+</div>
+
+<div class="dash" id="dash">
+  <div class="dash-head">
+    <h1>Painel VERAZ</h1>
+    <p>Clube VERAZ — visão geral</p>
+  </div>
+  <div class="dash-loading" id="dashLoading">Carregando números...</div>
+  <div class="dash-grid" id="dashGrid" style="display:none;">
+    <div class="kpi">
+      <div class="kpi-label">Clientes no Clube</div>
+      <div class="kpi-value" id="kpiClientes">—</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Frascos vendidos</div>
+      <div class="kpi-value" id="kpiFrascos">—</div>
+      <div class="kpi-note">via Clube VERAZ</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Prontos p/ resgatar</div>
+      <div class="kpi-value" id="kpiProntos">—</div>
+      <div class="kpi-note">clientes com prêmio disponível</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Média por cliente</div>
+      <div class="kpi-value" id="kpiMedia">—</div>
+      <div class="kpi-note">frascos por cliente</div>
+    </div>
+  </div>
+  <button class="dash-refresh" id="dashRefresh" style="display:none;">Atualizar</button>
+  <p class="dash-updated" id="dashUpdated"></p>
+</div>
+
+<script>
+  const SENHA_CORRETA = "290618";
+  const CLUBE_API_URL = "https://script.google.com/macros/s/AKfycbxyn8uD0oFmF6uZa1I4o8Tqqsv3nGSrIMrPuZQvLlVrxOGHH9yh6ll_uB6qEorargz8sQ/exec";
+
+  const gate = document.getElementById('gate');
+  const dash = document.getElementById('dash');
+  const gateBtn = document.getElementById('gateBtn');
+  const gatePassword = document.getElementById('gatePassword');
+  const gateError = document.getElementById('gateError');
+
+  function tentarEntrar(){
+    if(gatePassword.value.trim() === SENHA_CORRETA){
+      gate.style.display = 'none';
+      dash.style.display = 'block';
+      sessionStorage.setItem('verazPainelOk', '1');
+      carregarDados();
+    }else{
+      gateError.style.display = 'block';
+    }
+  }
+
+  gateBtn.addEventListener('click', tentarEntrar);
+  gatePassword.addEventListener('keydown', (e) => { if(e.key === 'Enter') tentarEntrar(); });
+
+  // já autenticado nessa sessão do navegador? entra direto
+  if(sessionStorage.getItem('verazPainelOk') === '1'){
+    gate.style.display = 'none';
+    dash.style.display = 'block';
+    carregarDados();
+  }
+
+  async function carregarDados(){
+    document.getElementById('dashLoading').style.display = 'block';
+    document.getElementById('dashGrid').style.display = 'none';
+    document.getElementById('dashRefresh').style.display = 'none';
+    try{
+      const res = await fetch(`${CLUBE_API_URL}?stats=1`);
+      const data = await res.json();
+      document.getElementById('kpiClientes').textContent = data.totalClientes ?? '—';
+      document.getElementById('kpiFrascos').textContent = data.totalFrascos ?? '—';
+      document.getElementById('kpiProntos').textContent = data.clientesProntos ?? '—';
+      document.getElementById('kpiMedia').textContent = data.mediaFrascos ?? '—';
+      document.getElementById('dashLoading').style.display = 'none';
+      document.getElementById('dashGrid').style.display = 'grid';
+      document.getElementById('dashRefresh').style.display = 'block';
+      document.getElementById('dashUpdated').textContent = 'Atualizado agora — ' + new Date().toLocaleTimeString('pt-BR');
+    }catch(err){
+      document.getElementById('dashLoading').textContent = 'Não consegui carregar os dados agora. Tenta atualizar em instantes.';
+      document.getElementById('dashRefresh').style.display = 'block';
+      console.error('Erro ao carregar painel:', err);
+    }
+  }
+
+  document.getElementById('dashRefresh').addEventListener('click', carregarDados);
+</script>
+
+</body>
+</html>
