@@ -741,7 +741,7 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
         }else if(data.premiosDisponiveis > 0){
           resultEl.textContent = `🎁 Você tem ${data.premiosDisponiveis} produto(s) grátis disponível(is)! Total de ${data.totalCompras} compras. Chama no WhatsApp pra resgatar.`;
         }else{
-          resultEl.textContent = `Você já comprou ${data.totalCompras} frasco(s) de 60ml — faltam ${data.faltam} pra ganhar um frasco grátis!`;
+          resultEl.textContent = `Você já comprou ${data.totalCompras} de 5 frascos necessários — faltam ${data.faltam} pra ganhar seu frasco grátis! (as 2 primeiras compras já vêm de presente, por isso são só 5)`;
         }
       }catch(err){
         resultEl.textContent = 'Não consegui consultar agora. Tenta de novo em instantes.';
