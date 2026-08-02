@@ -653,8 +653,17 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
     return true;
   }
 
+  function cartSignature(){
+    return cart.map(i => `${i.key}:${i.qty}`).join('|');
+  }
+  let lastOrderSignature = null;
+  let lastLoyaltySignature = null;
+
   function sendOrderToSheet(){
     if(!CONFIG.sheetsUrl) return;
+    const sig = cartSignature();
+    if(sig === lastOrderSignature) return; // evita registrar o mesmo pedido de novo só por trocar de aba
+    lastOrderSignature = sig;
     const itemsList = cart.map(i => `${i.qty}x ${i.nome} (${i.sizeLabel}) — ${fmt(i.unitPrice * i.qty)}`).join(' | ');
     const payload = {
       nome: document.getElementById('custNome').value.trim(),
@@ -666,7 +675,7 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
       desconto: cartDiscountValue() > 0.001 ? fmt(cartDiscountValue()) : 'Nenhum',
       frete: `${cartShipLabel}: ${fmt(cartShippingPrice())}`,
       total: fmt(cartTotal()),
-      pagamento: document.querySelector('.pay-tab.active').dataset.pay === 'pix' ? 'Pix' : 'WhatsApp',
+      pagamento: document.querySelector('.pay-tab.active').dataset.pay === 'pix' ? 'Pix' : (document.querySelector('.pay-tab.active').dataset.pay === 'card' ? 'Cartão/Pix PagBank' : 'WhatsApp'),
     };
     fetch(CONFIG.sheetsUrl, {
       method: 'POST',
@@ -678,12 +687,15 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
 
   function registerLoyaltyPurchase(){
     if(!CONFIG.clubeApiUrl || CONFIG.clubeApiUrl.indexOf('COLE_AQUI') === 0) return;
+    const sig = cartSignature();
+    if(sig === lastLoyaltySignature) return; // evita contar o mesmo carrinho 2x (trocar de aba, reabrir, etc.)
     const phone = document.getElementById('custTelefone').value.trim();
     const name = document.getElementById('custNome').value.trim();
     if(!phone) return;
     // Só frascos de 60ml contam pro Clube VERAZ — testers não contam, pra manter a conta saudável
     const qtdFrascos = cart.filter(i => i.size === 'frasco').reduce((sum, i) => sum + i.qty, 0);
     if(qtdFrascos < 1) return;
+    lastLoyaltySignature = sig;
     fetch(CONFIG.clubeApiUrl, {
       method: 'POST',
       mode: 'no-cors',
@@ -700,13 +712,14 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
     registerLoyaltyPurchase();
   });
 
+  const PAY_PANEL_MAP = { wpp: 'panelWpp', pix: 'panelPix', card: 'panelCard' };
   document.querySelectorAll('.pay-tab').forEach(tab=>{
     tab.addEventListener('click', ()=>{
-      if(tab.dataset.pay === 'pix' && !validateDelivery()) return;
+      if((tab.dataset.pay === 'pix' || tab.dataset.pay === 'card') && !validateDelivery()) return;
       document.querySelectorAll('.pay-tab').forEach(t=>t.classList.remove('active'));
       document.querySelectorAll('.pay-panel').forEach(p=>p.classList.remove('active'));
       tab.classList.add('active');
-      document.getElementById(tab.dataset.pay === 'wpp' ? 'panelWpp' : 'panelPix').classList.add('active');
+      document.getElementById(PAY_PANEL_MAP[tab.dataset.pay]).classList.add('active');
       if(tab.dataset.pay === 'pix'){
         renderPix();
         sendOrderToSheet();
@@ -714,6 +727,52 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
       }
     });
   });
+
+  const cardPayBtn = document.getElementById('cardPayBtn');
+  if(cardPayBtn){
+    cardPayBtn.addEventListener('click', async ()=>{
+      if(!validateDelivery()) return;
+      if(!CONFIG.pagbankApiUrl || CONFIG.pagbankApiUrl.indexOf('COLE_AQUI') === 0){
+        document.getElementById('cardPayStatus').textContent = 'Pagamento por cartão ainda não configurado. Fale com a gente pelo WhatsApp.';
+        return;
+      }
+      const statusEl = document.getElementById('cardPayStatus');
+      statusEl.textContent = 'Preparando pagamento seguro...';
+      cardPayBtn.disabled = true;
+
+      const payload = {
+        items: cart.map(i => ({ name: `${i.nome} (${i.sizeLabel})`, quantity: i.qty, unitPrice: i.unitPrice })),
+        discountAmount: cartDiscountValue(),
+        shippingAmount: cartShippingPrice(),
+        customerName: document.getElementById('custNome').value.trim(),
+        customerPhone: document.getElementById('custTelefone').value.trim(),
+        customerEmail: document.getElementById('custEmail').value.trim(),
+        customerAddress: cartShipMode === 'retirada' ? 'Retirar em mãos' : document.getElementById('custEndereco').value.trim(),
+      };
+
+      try{
+        const res = await fetch(CONFIG.pagbankApiUrl, {
+          method: 'POST',
+          headers: {'Content-Type': 'text/plain'},
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if(data.payUrl){
+          sendOrderToSheet();
+          registerLoyaltyPurchase();
+          statusEl.textContent = 'Redirecionando pro pagamento seguro...';
+          window.location.href = data.payUrl;
+        }else{
+          statusEl.textContent = 'Não foi possível gerar o pagamento agora. Tenta de novo ou usa o WhatsApp/Pix.';
+          cardPayBtn.disabled = false;
+        }
+      }catch(err){
+        statusEl.textContent = 'Erro ao conectar com o pagamento. Tenta de novo em instantes.';
+        cardPayBtn.disabled = false;
+        console.error('PagBank checkout error:', err);
+      }
+    });
+  }
 
   const loyaltyBtn = document.getElementById('loyaltyCheckBtn');
   if(loyaltyBtn){
