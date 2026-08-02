@@ -84,6 +84,18 @@
       <div class="kpi-label">Média por cliente</div>
       <div class="kpi-value" id="kpiMedia">—</div>
       <div class="kpi-note">frascos por cliente</div>
+    <div class="kpi">
+      <div class="kpi-label">Faturamento total</div>
+      <div class="kpi-value" id="kpiFaturamento" style="font-size:30px;">—</div>
+      <div class="kpi-note">via Pedidos VERAZ</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Total de pedidos</div>
+      <div class="kpi-value" id="kpiPedidos">—</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Ticket médio</div>
+      <div class="kpi-value" id="kpiTicket" style="font-size:30px;">—</div>
     </div>
   </div>
   <button class="dash-refresh" id="dashRefresh" style="display:none;">Atualizar</button>
@@ -93,6 +105,7 @@
 <script>
   const SENHA_CORRETA = "290618";
   const CLUBE_API_URL = "https://script.google.com/macros/s/AKfycbxyn8uD0oFmF6uZa1I4o8Tqqsv3nGSrIMrPuZQvLlVrxOGHH9yh6ll_uB6qEorargz8sQ/exec";
+  const PEDIDOS_API_URL = "https://script.google.com/macros/s/AKfycbx0Xyuy_UUi2VIrrHaoYHBD5-6isO2AfW8zwaGSBDhKFONhtYIB7uzEBb_rPCJFRWID/exec";
 
   const gate = document.getElementById('gate');
   const dash = document.getElementById('dash');
@@ -121,26 +134,45 @@
     carregarDados();
   }
 
+  function fmtMoeda(v){
+    return 'R$ ' + Number(v).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+  }
+
   async function carregarDados(){
     document.getElementById('dashLoading').style.display = 'block';
     document.getElementById('dashGrid').style.display = 'none';
     document.getElementById('dashRefresh').style.display = 'none';
-    try{
-      const res = await fetch(`${CLUBE_API_URL}?stats=1`);
-      const data = await res.json();
-      document.getElementById('kpiClientes').textContent = data.totalClientes ?? '—';
-      document.getElementById('kpiFrascos').textContent = data.totalFrascos ?? '—';
-      document.getElementById('kpiProntos').textContent = data.clientesProntos ?? '—';
-      document.getElementById('kpiMedia').textContent = data.mediaFrascos ?? '—';
-      document.getElementById('dashLoading').style.display = 'none';
-      document.getElementById('dashGrid').style.display = 'grid';
-      document.getElementById('dashRefresh').style.display = 'block';
-      document.getElementById('dashUpdated').textContent = 'Atualizado agora — ' + new Date().toLocaleTimeString('pt-BR');
-    }catch(err){
-      document.getElementById('dashLoading').textContent = 'Não consegui carregar os dados agora. Tenta atualizar em instantes.';
-      document.getElementById('dashRefresh').style.display = 'block';
-      console.error('Erro ao carregar painel:', err);
+
+    const clubePromise = fetch(`${CLUBE_API_URL}?stats=1`).then(r => r.json()).catch(err => { console.error('Erro Clube VERAZ:', err); return null; });
+
+    let pedidosPromise = Promise.resolve(null);
+    if(PEDIDOS_API_URL && PEDIDOS_API_URL.indexOf('COLE_AQUI') !== 0){
+      pedidosPromise = fetch(`${PEDIDOS_API_URL}?stats=1`).then(r => r.json()).catch(err => { console.error('Erro Pedidos VERAZ:', err); return null; });
     }
+
+    const [clube, pedidos] = await Promise.all([clubePromise, pedidosPromise]);
+
+    if(clube){
+      document.getElementById('kpiClientes').textContent = clube.totalClientes ?? '—';
+      document.getElementById('kpiFrascos').textContent = clube.totalFrascos ?? '—';
+      document.getElementById('kpiProntos').textContent = clube.clientesProntos ?? '—';
+      document.getElementById('kpiMedia').textContent = clube.mediaFrascos ?? '—';
+    }
+
+    if(pedidos){
+      document.getElementById('kpiFaturamento').textContent = fmtMoeda(pedidos.faturamentoTotal ?? 0);
+      document.getElementById('kpiPedidos').textContent = pedidos.totalPedidos ?? '—';
+      document.getElementById('kpiTicket').textContent = fmtMoeda(pedidos.ticketMedio ?? 0);
+    }else{
+      document.getElementById('kpiFaturamento').textContent = 'não configurado';
+      document.getElementById('kpiPedidos').textContent = '—';
+      document.getElementById('kpiTicket').textContent = 'não configurado';
+    }
+
+    document.getElementById('dashLoading').style.display = 'none';
+    document.getElementById('dashGrid').style.display = 'grid';
+    document.getElementById('dashRefresh').style.display = 'block';
+    document.getElementById('dashUpdated').textContent = 'Atualizado agora — ' + new Date().toLocaleTimeString('pt-BR');
   }
 
   document.getElementById('dashRefresh').addEventListener('click', carregarDados);
