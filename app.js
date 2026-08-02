@@ -729,7 +729,13 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
   });
 
   const cardPayBtn = document.getElementById('cardPayBtn');
-  if(cardPayBtn){
+  if(cardPayBtn && CONFIG.pagbankAtivo === false){
+    cardPayBtn.textContent = 'Em breve';
+    cardPayBtn.disabled = true;
+    cardPayBtn.style.opacity = '0.55';
+    cardPayBtn.style.cursor = 'not-allowed';
+    document.getElementById('cardPayStatus').textContent = 'Pagamento por cartão chegando em breve — por enquanto, usa o WhatsApp ou Pix.';
+  }else if(cardPayBtn){
     cardPayBtn.addEventListener('click', async ()=>{
       if(!validateDelivery()) return;
       if(!CONFIG.pagbankApiUrl || CONFIG.pagbankApiUrl.indexOf('COLE_AQUI') === 0){

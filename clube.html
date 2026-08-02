@@ -53,6 +53,7 @@
     sheetsUrl:     "https://script.google.com/macros/s/AKfycbyZHa2VsS6VAwr_Gfp-xVxlrPi-2SAYXS91Uju_4tMRbcKJymrA1QUY3j1TT-D858_f/exec",
     clubeApiUrl:   "https://script.google.com/macros/s/AKfycbxyn8uD0oFmF6uZa1I4o8Tqqsv3nGSrIMrPuZQvLlVrxOGHH9yh6ll_uB6qEorargz8sQ/exec",
     pagbankApiUrl: "https://script.google.com/macros/s/AKfycbwrZ8aFI6K7VfTbMZdiELUFW5IyBUb89KabWuUuiuVJu24w-aB34BqTOE3NwkhM2APv/exec",
+    pagbankAtivo:  false, // troque para true quando o PagBank liberar o acesso (allowlist)
   };
 
   const SHIPPING = {
@@ -70,7 +71,8 @@
 <header class="nav">
   <div class="container nav-inner">
     <button class="nav-toggle" id="navToggle" aria-label="Abrir menu">
-      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      <span>Menu</span>
     </button>
     <div class="nav-logo">
       <svg viewBox="340 115 175 415"><g fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">

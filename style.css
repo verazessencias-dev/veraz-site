@@ -155,7 +155,8 @@
   .cep-input-row input{flex:1; padding:10px 12px; border-radius:2px; border:1px solid var(--line); font-size:14px; font-family:var(--font-body);}
   .cep-input-row button{padding:10px 16px; font-size:13px; white-space:nowrap;}
 
-  .nav-toggle{display:flex; align-items:center; justify-content:center; padding:6px; color:var(--ink); flex-shrink:0;}
+  .nav-toggle{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; padding:6px; color:var(--ink); flex-shrink:0;}
+  .nav-toggle span{font-size:9px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase;}
 
   .drawer-backdrop{
     position:fixed; inset:0; background:rgba(27,18,10,0.5); backdrop-filter:blur(2px);
@@ -179,7 +180,9 @@
   .drawer-link{
     display:block; padding:16px 22px; font-size:16px; font-weight:600; color:var(--ink-soft);
     border-bottom:1px solid var(--line);
+    transition:background .2s ease, color .2s ease, padding-left .2s ease;
   }
+  .drawer-link:hover{background:rgba(201,151,43,0.1); color:var(--gold-strong); padding-left:28px;}
   .drawer-link:active{background:rgba(201,151,43,0.08);}
   .drawer-wpp{color:#1a7a4c; font-weight:700; margin-top:8px; border-bottom:none;}
 
@@ -654,8 +657,8 @@
   .shipping-block{margin-top:22px;}
   .shipping-label{font-size:12px; font-weight:700; letter-spacing:0.5px; color:#8a7b64; text-transform:uppercase; margin-bottom:8px;}
   .modal-shipping-note{font-size:12px; color:#8a7b64; margin-top:-10px; margin-bottom:6px;}
-  .pay-tabs{display:flex; gap:8px; margin-top:26px; border-bottom:1px solid var(--line);}
-  .pay-tab{padding:10px 4px; font-size:13.5px; font-weight:600; color:#8a7b64; border-bottom:2px solid transparent;}
+  .pay-tabs{display:flex; gap:6px; margin-top:26px; border-bottom:1px solid var(--line);}
+  .pay-tab{padding:10px 3px; font-size:12px; font-weight:600; color:#8a7b64; border-bottom:2px solid transparent; text-align:center; flex:1;}
   .pay-tab.active{color:var(--ink); border-color:var(--gold);}
 
   .delivery-block{margin-top:20px; padding-top:16px; border-top:1px solid var(--line);}
