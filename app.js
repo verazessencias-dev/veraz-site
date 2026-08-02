@@ -47,7 +47,7 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
         card.dataset.idx = idx;
         card.dataset.source = source;
         const iconHtml = p.foto ? `
-          <div class="card-photo-frame"><img class="card-photo" src="${p.foto}" alt="Frasco VERAZ ${p.nome}, inspirado em ${p.insp}"></div>
+          <div class="card-photo-frame"><img class="card-photo" src="${p.foto}" alt="Frasco VERAZ ${p.nome}, inspirado em ${p.insp}" loading="lazy" decoding="async"></div>
         ` : `
           <svg class="card-icon" viewBox="340 115 175 415"><g fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M 410 470 C 405 430 402 400 408 375 C 412 358 420 350 450 350 C 480 350 488 358 492 375 C 498 400 495 430 490 470 C 493 495 493 515 450 518 C 407 515 407 495 410 470 Z"/>
@@ -89,6 +89,40 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
   }
   renderCards();
 
+  // ---------- Dados estruturados de produto (SEO) ----------
+  (function(){
+    const allProducts = [];
+    if(typeof PRODUCTS !== 'undefined') allProducts.push(...PRODUCTS);
+    if(typeof ESSENCIAS !== 'undefined') allProducts.push(...ESSENCIAS);
+    if(allProducts.length === 0) return;
+
+    const itemListElements = allProducts.map((p, idx) => ({
+      "@type": "Product",
+      "name": `VERAZ ${p.nome} (inspirado em ${p.insp})`,
+      "description": p.blurb || '',
+      "image": p.foto ? `https://verazessencias.com.br/${p.foto.split('?')[0]}` : undefined,
+      "brand": { "@type": "Brand", "name": "VERAZ Essências" },
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "BRL",
+        "price": p.preco,
+        "availability": "https://schema.org/InStock",
+        "url": "https://verazessencias.com.br/"
+      }
+    }));
+
+    const schema = {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "itemListElement": itemListElements
+    };
+
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.textContent = JSON.stringify(schema);
+    document.head.appendChild(script);
+  })();
+
   function renderTesterList(){
     const container = document.getElementById('testerList');
     if(!container) return;
@@ -104,7 +138,7 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
       row.dataset.source = source;
       row.dataset.testermode = '1';
       const photoHtml = p.foto ? `
-        <div class="tester-row-photo"><img src="${p.foto}" alt="Frasco VERAZ ${p.nome}"></div>
+        <div class="tester-row-photo"><img src="${p.foto}" alt="Frasco VERAZ ${p.nome}" loading="lazy" decoding="async"></div>
       ` : `
         <div class="tester-row-photo"><svg viewBox="340 115 175 415" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
           <path d="M 410 470 C 405 430 402 400 408 375 C 412 358 420 350 450 350 C 480 350 488 358 492 375 C 498 400 495 430 490 470 C 493 495 493 515 450 518 C 407 515 407 495 410 470 Z"/>
@@ -647,11 +681,14 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
     const phone = document.getElementById('custTelefone').value.trim();
     const name = document.getElementById('custNome').value.trim();
     if(!phone) return;
+    // Só frascos de 60ml contam pro Clube VERAZ — testers não contam, pra manter a conta saudável
+    const qtdFrascos = cart.filter(i => i.size === 'frasco').reduce((sum, i) => sum + i.qty, 0);
+    if(qtdFrascos < 1) return;
     fetch(CONFIG.clubeApiUrl, {
       method: 'POST',
       mode: 'no-cors',
       headers: {'Content-Type': 'text/plain'},
-      body: JSON.stringify({ phone, name }),
+      body: JSON.stringify({ phone, name, quantidade: qtdFrascos }),
     }).catch(err => console.error('Erro ao registrar ponto no Clube VERAZ:', err));
   }
 
@@ -704,7 +741,7 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
         }else if(data.premiosDisponiveis > 0){
           resultEl.textContent = `🎁 Você tem ${data.premiosDisponiveis} produto(s) grátis disponível(is)! Total de ${data.totalCompras} compras. Chama no WhatsApp pra resgatar.`;
         }else{
-          resultEl.textContent = `Você já comprou ${data.totalCompras}x — faltam ${data.faltam} pra ganhar uma essência grátis!`;
+          resultEl.textContent = `Você já comprou ${data.totalCompras} frasco(s) de 60ml — faltam ${data.faltam} pra ganhar um frasco grátis!`;
         }
       }catch(err){
         resultEl.textContent = 'Não consegui consultar agora. Tenta de novo em instantes.';
