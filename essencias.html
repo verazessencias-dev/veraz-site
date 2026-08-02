@@ -52,6 +52,7 @@
     merchantCity:  "SAO PAULO",
     sheetsUrl:     "https://script.google.com/macros/s/AKfycbyZHa2VsS6VAwr_Gfp-xVxlrPi-2SAYXS91Uju_4tMRbcKJymrA1QUY3j1TT-D858_f/exec",
     clubeApiUrl:   "https://script.google.com/macros/s/AKfycbxyn8uD0oFmF6uZa1I4o8Tqqsv3nGSrIMrPuZQvLlVrxOGHH9yh6ll_uB6qEorargz8sQ/exec",
+    pagbankApiUrl: "https://script.google.com/macros/s/AKfycbwrZ8aFI6K7VfTbMZdiELUFW5IyBUb89KabWuUuiuVJu24w-aB34BqTOE3NwkhM2APv/exec",
   };
 
   const SHIPPING = {
@@ -301,6 +302,7 @@
         <div class="pay-tabs">
           <div class="pay-tab active" data-pay="wpp">WhatsApp</div>
           <div class="pay-tab" data-pay="pix">Pix (QR Code)</div>
+          <div class="pay-tab" data-pay="card">Cartão (PagBank)</div>
         </div>
 
         <div class="pay-panel active" id="panelWpp">
@@ -312,6 +314,12 @@
           <div id="qrcode-box"></div>
           <p class="pix-note">Escaneie com o app do seu banco. O código já vem com o valor exato preenchido.</p>
           <p class="pix-note" style="margin-top:10px; font-weight:600;">✅ Seu pedido e endereço já foram registrados. Depois de pagar, manda um alô no WhatsApp pra confirmar!</p>
+        </div>
+
+        <div class="pay-panel" id="panelCard">
+          <p style="font-size:13.5px; color:#5b4a38; margin-top:6px;">Pagamento processado com segurança pelo PagBank — Pix ou cartão de crédito parcelado.</p>
+          <button class="btn-gold btn-full" id="cardPayBtn" type="button">Pagar agora com PagBank</button>
+          <p class="pix-note" id="cardPayStatus" style="margin-top:10px;"></p>
         </div>
       </div>
     </div>
