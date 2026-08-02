@@ -763,8 +763,11 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
           statusEl.textContent = 'Redirecionando pro pagamento seguro...';
           window.location.href = data.payUrl;
         }else{
-          statusEl.textContent = 'Não foi possível gerar o pagamento agora. Tenta de novo ou usa o WhatsApp/Pix.';
+          let motivo = data.error || 'motivo desconhecido';
+          if(data.details) motivo += ' — detalhes: ' + JSON.stringify(data.details);
+          statusEl.textContent = 'Não foi possível gerar o pagamento: ' + motivo;
           cardPayBtn.disabled = false;
+          console.error('PagBank checkout recusado:', data);
         }
       }catch(err){
         statusEl.textContent = 'Erro ao conectar com o pagamento. Tenta de novo em instantes.';
