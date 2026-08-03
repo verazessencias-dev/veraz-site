@@ -630,15 +630,18 @@
   }
 
   .promo-popup-img-variant{
-    padding:26px 20px 20px; max-width:440px;
+    padding:30px 26px 24px; max-width:620px;
+  }
+  @media (max-width:680px){
+    .promo-popup-img-variant{ max-width:94vw; padding:24px 18px 18px; }
   }
   .promo-popup-img-variant .promo-popup-close{
     top:10px; right:10px; z-index:2; background:rgba(27,18,10,0.55);
     border-radius:50%; width:30px; height:30px; display:flex; align-items:center; justify-content:center;
   }
   .promo-popup-title{
-    font-family:var(--font-display); font-weight:900; font-size:26px;
-    color:var(--cream); text-align:center; margin-bottom:16px;
+    font-family:var(--font-display); font-weight:900; font-size:30px;
+    color:var(--cream); text-align:center; margin-bottom:18px;
   }
   .promo-popup-imglink{display:block; border-radius:4px; overflow:hidden; line-height:0;}
   .promo-popup-img{width:100%; height:auto; display:block; border-radius:4px;}
