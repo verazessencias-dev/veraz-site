@@ -214,9 +214,11 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
     const closeBtn = document.getElementById('promoClose');
     const skipBtn = document.getElementById('promoSkip');
     const ctaBtn = document.getElementById('promoCta');
+    const ctaBtn2 = document.getElementById('promoCtaBtn');
     if(closeBtn) closeBtn.addEventListener('click', closePromo);
     if(skipBtn) skipBtn.addEventListener('click', closePromo);
     if(ctaBtn) ctaBtn.addEventListener('click', closePromo);
+    if(ctaBtn2) ctaBtn2.addEventListener('click', closePromo);
     promoBackdrop.addEventListener('click', (e)=>{ if(e.target === promoBackdrop) closePromo(); });
   })();
 
