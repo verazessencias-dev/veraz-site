@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Teste — Checkout PagBank VERAZ</title>
+<script src="https://assets.pagseguro.com.br/checkout-sdk-js/rc/dist/browser/pagseguro.min.js"></script>
+<style>
+  body{font-family:Georgia, serif; max-width:560px; margin:40px auto; padding:0 20px; color:#2b1c10;}
+  h1{font-size:22px;}
+  button{background:#8a5a2b; color:#fff; border:none; padding:14px 24px; font-size:15px; border-radius:6px; cursor:pointer;}
+  button:hover{background:#6f4620;}
+  pre{background:#f4efe6; padding:16px; border-radius:6px; white-space:pre-wrap; word-break:break-all; font-size:13px;}
+  .status{font-weight:bold; margin-top:12px;}
+  .ok{color:#1a7a1a;}
+  .fail{color:#b53131;}
+</style>
+</head>
+<body>
+
+<h1>🌸 Teste do Checkout — VERAZ Essências</h1>
+<p>Este teste usa um <strong>cartão fictício de sandbox</strong> do PagBank. Nenhum valor real é cobrado.</p>
+
+<button onclick="testarCheckout()">Testar compra fictícia (R$ 10,00)</button>
+
+<p class="status" id="statusMsg"></p>
+<pre id="resultado">O resultado da chamada vai aparecer aqui...</pre>
+
+<script>
+  // ⚠️ Endpoint do Apps Script (já preenchido com o seu)
+  const ENDPOINT_PAGBANK = "https://script.google.com/macros/s/AKfycbwY2wFGWtNMkjJVV8kbe3JvEWNvqNDBr_PpMA75nkZNo6p-hdej-2j0F6V0-dbtkSCp/exec";
+
+  async function testarCheckout() {
+    const statusEl = document.getElementById('statusMsg');
+    const resultadoEl = document.getElementById('resultado');
+    statusEl.textContent = "Processando...";
+    statusEl.className = "status";
+    resultadoEl.textContent = "";
+
+    try {
+      // 1. Buscar a chave pública de SANDBOX do PagBank
+      const resPublicKey = await fetch("https://sandbox.api.pagseguro.com/public-keys?type=card");
+      const { public_key } = await resPublicKey.json();
+
+      // 2. Criptografar o cartão de teste (fictício, sandbox)
+      const card = PagSeguro.encryptCard({
+        publicKey: public_key,
+        holder: "Teste VERAZ",
+        number: "4111111111111111",
+        expMonth: "12",
+        expYear: "2030",
+        securityCode: "123"
+      });
+
+      if (card.hasErrors) {
+        statusEl.textContent = "Erro ao criptografar o cartão de teste.";
+        statusEl.className = "status fail";
+        resultadoEl.textContent = JSON.stringify(card.errors, null, 2);
+        return;
+      }
+
+      // 3. Chamar o endpoint (Apps Script)
+      const resposta = await fetch(ENDPOINT_PAGBANK, {
+        method: "POST",
+        body: JSON.stringify({
+          customer: {
+            name: "Cliente Teste",
+            email: "teste@sandbox.pagseguro.com.br",
+            tax_id: "12345678909",
+            phone_area: "11",
+            phone_number: "999999999"
+          },
+          items: [
+            { name: "Item de teste", quantity: 1, unit_amount: 1000 } // R$ 10,00 em centavos
+          ],
+          encryptedCard: card.encryptedCard,
+          installments: 1
+        })
+      });
+
+      const resultado = await resposta.json();
+      resultadoEl.textContent = JSON.stringify(resultado, null, 2);
+
+      const chargeStatus = resultado?.charges?.[0]?.status;
+      if (chargeStatus === "PAID" || chargeStatus === "AUTHORIZED") {
+        statusEl.textContent = "✅ Endpoint funcionando! Pagamento de teste aprovado.";
+        statusEl.className = "status ok";
+      } else if (resultado.error) {
+        statusEl.textContent = "❌ Erro retornado pelo endpoint: " + resultado.error;
+        statusEl.className = "status fail";
+      } else {
+        statusEl.textContent = "⚠️ Endpoint respondeu, mas o status não foi de aprovação. Veja o detalhe abaixo.";
+        statusEl.className = "status fail";
+      }
+
+    } catch (err) {
+      statusEl.textContent = "❌ Erro de conexão com o endpoint.";
+      statusEl.className = "status fail";
+      resultadoEl.textContent = err.message;
+    }
+  }
+</script>
+
+</body>
+</html>
