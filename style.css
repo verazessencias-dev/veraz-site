@@ -766,3 +766,44 @@
     .decants h2{font-size:28px;}
     .anchor-card{padding:24px;}
   }
+
+/* ---------- Prévia das Essências (teaser na home) ---------- */
+.ess-teaser{
+  padding:60px 0 70px; background:linear-gradient(180deg, rgba(181,136,58,0.06), rgba(181,136,58,0));
+}
+.ess-teaser-head{ text-align:center; max-width:600px; margin:0 auto 36px; }
+.ess-teaser-head .eyebrow{ color:var(--wine); font-weight:800; letter-spacing:2px; font-size:13px; }
+.ess-teaser-head h2{ font-family:var(--font-display); font-size:32px; margin:10px 0 12px; color:var(--gold-deep); }
+.ess-teaser-head p{ font-size:15px; color:#5b4a38; line-height:1.6; }
+
+.ess-teaser-grid{
+  display:grid; grid-template-columns:repeat(6, 1fr); gap:16px;
+  max-width:1100px; margin:0 auto 36px;
+}
+.ess-teaser-card{
+  background:#fff; border-radius:12px; padding:14px 10px 16px; text-align:center;
+  box-shadow:0 4px 16px rgba(74,55,25,0.08); transition:transform .2s ease, box-shadow .2s ease;
+}
+.ess-teaser-card:hover{ transform:translateY(-4px); box-shadow:0 10px 24px rgba(74,55,25,0.14); }
+.ess-teaser-card img{
+  width:100%; aspect-ratio:3/4; object-fit:cover; border-radius:8px; margin-bottom:10px;
+}
+.ess-teaser-insp{ display:block; font-size:10.5px; letter-spacing:1px; text-transform:uppercase; color:#a08a63; }
+.ess-teaser-name{ display:block; font-family:var(--font-display); font-weight:700; font-size:14.5px; color:var(--gold-deep); margin-top:2px; }
+
+.ess-teaser-cta{ display:block; width:fit-content; margin:0 auto; padding:14px 36px; font-size:15px; }
+
+@media (max-width:900px){
+  .ess-teaser-grid{ grid-template-columns:repeat(3, 1fr); }
+}
+@media (max-width:600px){
+  .ess-teaser{ padding:44px 0 50px; }
+  .ess-teaser-head h2{ font-size:24px; }
+  .ess-teaser-grid{
+    display:flex; overflow-x:auto; overflow-y:hidden; gap:14px;
+    padding:4px 4px 14px; margin:0 -4px 28px;
+    scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;
+  }
+  .ess-teaser-card{ min-width:38vw; max-width:38vw; flex-shrink:0; scroll-snap-align:start; }
+  .ess-teaser-grid::-webkit-scrollbar{ display:none; }
+}
