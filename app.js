@@ -198,6 +198,26 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
     }
   })();
 
+  // ---------- Faixa do topo com mensagens alternando ----------
+  (function(){
+    const textEl = document.getElementById('launchBarText');
+    if(!textEl) return;
+    const mensagens = [
+      'VERAZ CHEGOU — PREÇO DE LANÇAMENTO NAS 10 ESSÊNCIAS',
+      'CLUBE VERAZ — COMPRE 5, LEVE O 6º DE PRESENTE',
+      'KIT DIA DOS PAIS — TRÊS FORMAS DE DIZER "EU TE CONHEÇO"',
+    ];
+    let idx = 0;
+    setInterval(()=>{
+      idx = (idx + 1) % mensagens.length;
+      textEl.style.opacity = '0';
+      setTimeout(()=>{
+        textEl.textContent = mensagens[idx];
+        textEl.style.opacity = '1';
+      }, 300);
+    }, 4000);
+  })();
+
   // ---------- Popup promocional de lançamento (só na home, 1x por sessão) ----------
   (function(){
     const promoBackdrop = document.getElementById('promoBackdrop');

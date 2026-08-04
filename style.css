@@ -65,6 +65,7 @@
     .launch-bar .dot{width:16px; height:16px;}
   }
   .launch-bar .dot{width:7px; height:7px; border-radius:50%; background:var(--ink); flex-shrink:0; animation:pulseDot 1.4s ease-in-out infinite;}
+  .launch-bar-text{transition:opacity .3s ease; display:inline-block;}
   @keyframes shimmerBar{0%{background-position:0% 50%;} 100%{background-position:300% 50%;}}
 
   .sparkle-field{position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:0;}
