@@ -56,13 +56,13 @@
   }
   @media (min-width:960px){
     .launch-bar{
-      min-height:220px;
-      font-size:30px;
-      letter-spacing:2.5px;
-      gap:20px;
-      padding:40px 30px;
+      min-height:0;
+      font-size:14px;
+      letter-spacing:1.5px;
+      gap:12px;
+      padding:13px 30px;
     }
-    .launch-bar .dot{width:16px; height:16px;}
+    .launch-bar .dot{width:9px; height:9px;}
   }
   .launch-bar .dot{width:7px; height:7px; border-radius:50%; background:var(--ink); flex-shrink:0; animation:pulseDot 1.4s ease-in-out infinite;}
   .launch-bar-text{transition:opacity .3s ease; display:inline-block;}
@@ -824,3 +824,55 @@
   padding:6px 14px; transition:background .2s ease;
 }
 .quick-link:hover{ background:rgba(181,136,58,0.18); }
+
+/* ---------- Loja Virtual + Kits Dia dos Pais (seção dividida, sempre lado a lado) ---------- */
+.store-kits-split{
+  display:flex; align-items:stretch; width:100%; overflow:hidden;
+}
+.sks-col{ flex:1 1 50%; min-width:0; padding:26px 16px; position:relative; }
+
+.sks-loja{
+  background:var(--cream); display:flex; flex-direction:column; align-items:flex-start;
+}
+.sks-loja .eyebrow{ color:var(--gold-strong); font-weight:800; letter-spacing:1.3px; font-size:10px; }
+.sks-loja h2{ font-family:var(--font-display); font-weight:900; font-size:19px; line-height:1.15; margin:8px 0 8px; color:var(--ink); }
+.sks-loja h2 .gold-text{ color:var(--gold-strong); }
+.sks-loja p{ font-size:11.5px; line-height:1.45; color:#5b4a38; margin-bottom:10px; }
+.sks-loja-img{ width:100%; max-width:110px; height:auto; border-radius:10px; margin:2px 0 12px; filter:drop-shadow(0 10px 18px rgba(140,106,46,0.3)); }
+.sks-loja-cta{ padding:9px 16px; font-size:10.5px; letter-spacing:.6px; }
+
+.sks-kits{
+  background:linear-gradient(135deg, var(--gold-deep), var(--gold-bright));
+}
+.sks-kits .eyebrow{ color:var(--wine); font-weight:800; font-size:9.5px; letter-spacing:1px; }
+.sks-kits h2{ font-family:var(--font-display); font-weight:900; font-size:16px; line-height:1.15; margin:6px 0 6px; color:var(--ink); }
+.sks-kits > p{ font-size:10.5px; color:rgba(27,18,10,0.75); margin-bottom:10px; }
+
+.sks-tester-list{ display:flex; flex-direction:column; gap:8px; margin-top:0; }
+.sks-tester-list .tester-row{ padding:9px 10px; gap:4px; }
+.sks-tester-list .tester-row-name{ font-size:12px; }
+.sks-tester-list .tester-row-insp{ font-size:8px; }
+.sks-tester-list .tester-row-main{ font-size:13.5px; }
+.sks-tester-list .tester-row-old{ font-size:8.5px; }
+.sks-tester-list .tester-row-btn{ padding:6px 10px; font-size:8.5px; letter-spacing:.8px; }
+.tester-row-desc{ display:block; font-size:9px; color:#8a7b64; margin-top:1px; line-height:1.3; }
+
+@media (min-width:641px){
+  .sks-col{ padding:44px 30px; }
+  .sks-loja h2{ font-size:26px; }
+  .sks-loja p{ font-size:13.5px; }
+  .sks-loja-img{ max-width:180px; }
+  .sks-loja-cta{ padding:12px 24px; font-size:13px; }
+  .sks-kits h2{ font-size:22px; }
+  .sks-kits > p{ font-size:13px; }
+  .sks-tester-list .tester-row-name{ font-size:15px; }
+  .sks-tester-list .tester-row-main{ font-size:17px; }
+}
+
+@media (min-width:960px){
+  .sks-col{ padding:70px 56px; }
+  .sks-loja h2{ font-size:38px; }
+  .sks-loja p{ font-size:16px; max-width:380px; }
+  .sks-loja-img{ max-width:230px; }
+  .sks-kits h2{ font-size:30px; }
+}
