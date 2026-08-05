@@ -762,6 +762,24 @@
     }
     .grid::-webkit-scrollbar, .fd-grid::-webkit-scrollbar, .club-grid::-webkit-scrollbar{display:none;}
 
+    /* Catálogo dos 10 perfumes de lançamento: formato compacto, ~2 por tela */
+    .catalog .grid{ gap:12px; padding:4px 4px 14px; }
+    .catalog .grid > *{ min-width:42vw; max-width:42vw; }
+    .catalog .card .card-icon{ width:38px; margin:20px auto 10px; }
+    .catalog .card .insp{ padding:0 10px; }
+    .catalog .card .insp-label{ font-size:8px; letter-spacing:1px; }
+    .catalog .card .insp-name{ font-size:14px; margin-top:2px; }
+    .catalog .card .veraz-name{ font-size:13px; }
+    .catalog .card .ml-tag{ font-size:8.5px; padding:1px 5px; }
+    .catalog .card .blurb{ display:none; }
+    .catalog .card .launch-badge{ font-size:7.5px; padding:3px 8px; margin-top:8px; }
+    .catalog .card .price-row{ margin-top:10px; }
+    .catalog .card .price-old{ font-size:10px; }
+    .catalog .card .price-main{ font-size:15px; }
+    .catalog .card .price-decant{ font-size:9.5px; }
+    .catalog .card .buy-btn{ margin:12px 10px 0; width:calc(100% - 20px); padding:8px; font-size:9px; letter-spacing:1px; }
+    .catalog .nicho-badge{ font-size:7px; padding:3px 7px; top:8px; right:8px; }
+
     .decants{padding:44px 0;}
     .decants-inner{grid-template-columns:1fr; gap:34px;}
     .decants h2{font-size:28px;}
