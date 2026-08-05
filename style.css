@@ -808,3 +808,19 @@
   .ess-teaser-card{ min-width:38vw; max-width:38vw; flex-shrink:0; scroll-snap-align:start; }
   .ess-teaser-grid::-webkit-scrollbar{ display:none; }
 }
+
+/* ---------- Faixa de atalhos rápidos (Clube VERAZ / Kit Dia dos Pais) ---------- */
+.quick-links{
+  display:flex; justify-content:center; gap:10px;
+  background:#fff; border-bottom:1px solid rgba(181,136,58,0.18);
+  padding:9px 12px; overflow-x:auto; -webkit-overflow-scrolling:touch;
+}
+.quick-links::-webkit-scrollbar{ display:none; }
+.quick-link{
+  display:inline-flex; align-items:center; gap:5px; white-space:nowrap;
+  font-size:12.5px; font-weight:700; letter-spacing:.3px;
+  color:var(--gold-deep); background:rgba(181,136,58,0.09);
+  border:1px solid rgba(181,136,58,0.35); border-radius:20px;
+  padding:6px 14px; transition:background .2s ease;
+}
+.quick-link:hover{ background:rgba(181,136,58,0.18); }
