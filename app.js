@@ -198,6 +198,18 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
     }
   })();
 
+  // ---------- Setinha "arraste pra ver mais": some depois do primeiro scroll ----------
+  (function(){
+    document.querySelectorAll('.scroll-area').forEach(area => {
+      const scroller = area.querySelector('.grid, .ess-teaser-grid');
+      const hint = area.querySelector('.scroll-hint');
+      if(!scroller || !hint) return;
+      scroller.addEventListener('scroll', () => {
+        if(scroller.scrollLeft > 12) hint.style.opacity = '0';
+      }, { passive:true });
+    });
+  })();
+
   // ---------- Faixa do topo com mensagens alternando ----------
   (function(){
     const textEl = document.getElementById('launchBarText');

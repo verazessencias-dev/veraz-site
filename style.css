@@ -764,7 +764,7 @@
 
     /* Catálogo dos 10 perfumes de lançamento: formato compacto, ~2 por tela */
     .catalog .grid{ gap:12px; padding:4px 4px 14px; }
-    .catalog .grid > *{ min-width:42vw; max-width:42vw; }
+    .catalog .grid > *{ min-width:36vw; max-width:36vw; }
     .catalog .card .card-icon{ width:38px; margin:20px auto 10px; }
     .catalog .card .insp{ padding:0 10px; }
     .catalog .card .insp-label{ font-size:8px; letter-spacing:1px; }
@@ -823,7 +823,7 @@
     padding:4px 4px 14px; margin:0 -4px 28px;
     scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;
   }
-  .ess-teaser-card{ min-width:38vw; max-width:38vw; flex-shrink:0; scroll-snap-align:start; }
+  .ess-teaser-card{ min-width:44vw; max-width:44vw; flex-shrink:0; scroll-snap-align:start; }
   .ess-teaser-grid::-webkit-scrollbar{ display:none; }
 }
 
@@ -893,4 +893,25 @@
   .sks-loja p{ font-size:16px; max-width:380px; }
   .sks-loja-img{ max-width:230px; }
   .sks-kits h2{ font-size:30px; }
+}
+
+/* ---------- Setinha indicando "arraste pra ver mais" (só no celular) ---------- */
+.scroll-area{ position:relative; }
+.scroll-hint{
+  display:none;
+  position:absolute; top:50%; right:2px; transform:translateY(-50%);
+  width:32px; height:32px; border-radius:50%;
+  background:rgba(27,18,10,0.72); color:#fff;
+  align-items:center; justify-content:center;
+  font-size:20px; line-height:1; font-weight:700;
+  pointer-events:none; z-index:5;
+  animation:scrollHintBounce 1.3s ease-in-out infinite;
+  transition:opacity .3s ease;
+}
+@keyframes scrollHintBounce{
+  0%, 100%{ transform:translateY(-50%) translateX(0); }
+  50%{ transform:translateY(-50%) translateX(-6px); }
+}
+@media (max-width:760px){
+  .scroll-hint{ display:flex; }
 }
