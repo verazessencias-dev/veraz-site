@@ -1,367 +1,911 @@
-// VERAZ Essências v2 — lógica do site
-function fmt(v){ return "R$ " + v.toFixed(2).replace('.', ','); }
+// VERAZ Essências — lógica compartilhada (carrinho, modal, checkout, menu, Pix)
+if(typeof PRODUCTS === 'undefined') var PRODUCTS = [];
+if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
 
-// ---------- Menu mobile ----------
-const menuBtn = document.getElementById('menuBtn');
-const hdrDrawer = document.getElementById('hdrDrawer');
-menuBtn.addEventListener('click', () => hdrDrawer.classList.toggle('open'));
+  function wppLink(text){
+    return `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(text)}`;
+  }
+  if(document.getElementById('navWpp')) document.getElementById('navWpp').href = wppLink("Oi! Vim pelo site da VERAZ e queria saber mais sobre as essências.");
+  if(document.getElementById('drawerWpp')) document.getElementById('drawerWpp').href = wppLink("Oi! Vim pelo site da VERAZ e queria saber mais sobre as essências.");
 
-// ---------- Cards de produto ----------
-function cardHTML(p, tag){
-  return `
-    <div class="p-card" data-id="${p.id}">
-      <div class="p-card-img">
-        ${tag ? `<span class="p-card-tag">${tag}</span>` : ''}
-        <img src="${p.foto}" alt="Frasco do perfume ${p.nome}" loading="lazy">
-      </div>
-      <div class="p-card-body">
-        <span class="p-card-cat">${p.categoria === 'nicho' ? 'Nicho' : (p.categoria === 'lancamento' ? 'Lançamento VERAZ' : 'Clássico')}</span>
-        <div class="p-card-insp">Inspirado em ${p.insp}</div>
-        <div class="p-card-nome">${p.nome}</div>
-        <div class="p-card-price">
-          <span class="old">${fmt(p.precoOriginal)}</span>
-          <span class="main">${fmt(p.preco)}</span>
-        </div>
-        <div class="p-card-ml">60ml</div>
-      </div>
-    </div>
-  `;
-}
-
-function renderRow(containerId, list, tagFn){
-  const el = document.getElementById(containerId);
-  el.innerHTML = list.map(p => cardHTML(p, tagFn ? tagFn(p) : null)).join('');
-}
-
-renderRow('rowBest', CATALOG.filter(p => p.maisVendido), p => 'Mais vendido');
-renderRow('rowLaunch', CATALOG.filter(p => p.categoria === 'lancamento'), () => 'Lançamento');
-
-let currentFilter = 'todos';
-function renderCatalog(){
-  const list = currentFilter === 'todos' ? CATALOG : CATALOG.filter(p => p.linha === currentFilter);
-  renderRow('catGrid', list, p => p.categoria === 'lancamento' ? 'Lançamento' : (p.maisVendido ? 'Mais vendido' : null));
-}
-renderCatalog();
-
-document.getElementById('catTabs').addEventListener('click', e => {
-  const btn = e.target.closest('.cat-tab');
-  if(!btn) return;
-  document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  currentFilter = btn.dataset.filter;
-  renderCatalog();
-});
-
-// ---------- Clique em qualquer card abre o produto ----------
-document.addEventListener('click', e => {
-  const card = e.target.closest('.p-card');
-  if(card){ openProduct(card.dataset.id); return; }
-  const trigger = e.target.closest('[data-product]');
-  if(trigger){ e.preventDefault(); openProduct(trigger.dataset.product); }
-});
-
-// ---------- Overlay: Produto ----------
-const productOverlay = document.getElementById('productOverlay');
-let currentProduct = null;
-let currentSize = 'frasco';
-let currentQty = 1;
-
-function openProduct(id){
-  currentProduct = CATALOG.find(p => p.id === id);
-  if(!currentProduct) return;
-  currentSize = 'frasco';
-  currentQty = 1;
-
-  document.getElementById('pImg').src = currentProduct.foto;
-  document.getElementById('pImg').alt = 'Frasco do perfume ' + currentProduct.nome;
-  document.getElementById('pCategoria').textContent = currentProduct.categoria === 'nicho' ? 'Nicho' : (currentProduct.categoria === 'lancamento' ? 'Lançamento VERAZ' : 'Clássico');
-  document.getElementById('pInsp').textContent = 'Inspirado em ' + currentProduct.insp;
-  document.getElementById('pNome').textContent = currentProduct.nome;
-  document.getElementById('pBlurb').textContent = currentProduct.blurb;
-  document.getElementById('pNotes').innerHTML = `
-    <div><b>Topo</b><span>${currentProduct.notas.topo}</span></div>
-    <div><b>Coração</b><span>${currentProduct.notas.coracao}</span></div>
-    <div><b>Fundo</b><span>${currentProduct.notas.fundo}</span></div>
-  `;
-  document.querySelectorAll('.size-tab').forEach(t => t.classList.toggle('active', t.dataset.size === 'frasco'));
-  document.getElementById('pQtyVal').textContent = '1';
-  document.getElementById('pAddedMsg').classList.remove('show');
-  updateProductPrice();
-  productOverlay.classList.add('open');
-}
-function closeProduct(){ productOverlay.classList.remove('open'); }
-document.getElementById('productClose').addEventListener('click', closeProduct);
-productOverlay.addEventListener('click', e => { if(e.target === productOverlay) closeProduct(); });
-
-document.querySelectorAll('.size-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    currentSize = tab.dataset.size;
-    document.querySelectorAll('.size-tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    updateProductPrice();
+  const drawerBackdrop = document.getElementById('drawerBackdrop');
+  const navToggleBtn = document.getElementById('navToggle');
+  const drawerCloseBtn = document.getElementById('drawerClose');
+  function openDrawer(){ if(drawerBackdrop) drawerBackdrop.classList.add('open'); }
+  function closeDrawer(){ if(drawerBackdrop) drawerBackdrop.classList.remove('open'); }
+  if(navToggleBtn) navToggleBtn.addEventListener('click', openDrawer);
+  if(drawerCloseBtn) drawerCloseBtn.addEventListener('click', closeDrawer);
+  if(drawerBackdrop) drawerBackdrop.addEventListener('click', (e)=>{ if(e.target === drawerBackdrop) closeDrawer(); });
+  document.querySelectorAll('.drawer-link').forEach(link=>{
+    link.addEventListener('click', closeDrawer);
   });
-});
-document.getElementById('pQtyMinus').addEventListener('click', () => {
-  if(currentQty > 1) currentQty--;
-  document.getElementById('pQtyVal').textContent = currentQty;
-  updateProductPrice();
-});
-document.getElementById('pQtyPlus').addEventListener('click', () => {
-  currentQty++;
-  document.getElementById('pQtyVal').textContent = currentQty;
-  updateProductPrice();
-});
-function unitPrice(){ return currentSize === 'frasco' ? currentProduct.preco : currentProduct.decant; }
-function unitPriceOriginal(){ return currentSize === 'frasco' ? currentProduct.precoOriginal : currentProduct.decantOriginal; }
-function updateProductPrice(){
-  document.getElementById('pPriceOld').textContent = fmt(unitPriceOriginal() * currentQty);
-  document.getElementById('pPriceMain').textContent = fmt(unitPrice() * currentQty);
-}
+  if(document.getElementById('contactWpp')) document.getElementById('contactWpp').href = wppLink("Oi! Vim pelo site da VERAZ e queria uma ajuda pra escolher a essência certa.");
+  if(document.getElementById('floatWpp')) document.getElementById('floatWpp').href = wppLink("Oi! Vim pelo site da VERAZ e queria saber mais sobre as essências.");
+  document.querySelectorAll('.fd-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const nome = btn.dataset.kit;
+      const price = parseFloat(btn.dataset.price);
+      const insp = btn.dataset.insp || 'Edição Dia dos Pais';
+      const key = 'kit|' + nome;
+      const existing = cart.find(i => i.key === key);
+      if(existing){ existing.qty += 1; }
+      else{ cart.push({ key, insp, nome, size: 'kit', sizeLabel: 'Kit', unitPrice: price, qty: 1 }); }
+      updateCartBadge();
+      openCart();
+    });
+  });
 
-// ---------- Carrinho ----------
-const CART_STORAGE_KEY = 'veraz_cart_v2';
-let cart = [];
-try{
-  const saved = localStorage.getItem(CART_STORAGE_KEY);
-  if(saved) cart = JSON.parse(saved);
-}catch(err){ cart = []; }
+  function fmt(v){ return "R$ " + v.toFixed(2).replace('.', ','); }
 
-function saveCart(){
-  try{ localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart)); }
-  catch(err){ /* localStorage indisponível — carrinho segue funcionando só nesta sessão */ }
-}
-
-function cartKey(p, size){ return p.id + '|' + size; }
-
-document.getElementById('pAddToCart').addEventListener('click', () => {
-  const key = cartKey(currentProduct, currentSize);
-  const existing = cart.find(i => i.key === key);
-  if(existing){ existing.qty += currentQty; }
-  else{
-    cart.push({
-      key, id: currentProduct.id, nome: currentProduct.nome, foto: currentProduct.foto,
-      size: currentSize, sizeLabel: currentSize === 'frasco' ? 'Frasco 60ml' : 'Tester 5ml',
-      unitPrice: unitPrice(), qty: currentQty
+  function renderProductGrid(list, gridMap, source, showBadge){
+    gridMap.forEach(([gridId, linha])=>{
+      const targetGrid = document.getElementById(gridId);
+      if(!targetGrid) return;
+      targetGrid.innerHTML = "";
+      list.forEach((p, idx) => {
+        if(p.linha !== linha) return;
+        const card = document.createElement('div');
+        card.className = `card ${p.linha}`;
+        card.dataset.idx = idx;
+        card.dataset.source = source;
+        const iconHtml = p.foto ? `
+          <div class="card-photo-frame"><img class="card-photo" src="${p.foto}" alt="Frasco VERAZ ${p.nome}, inspirado em ${p.insp}" loading="lazy" decoding="async"></div>
+        ` : `
+          <svg class="card-icon" viewBox="340 115 175 415"><g fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M 410 470 C 405 430 402 400 408 375 C 412 358 420 350 450 350 C 480 350 488 358 492 375 C 498 400 495 430 490 470 C 493 495 493 515 450 518 C 407 515 407 495 410 470 Z"/>
+        <path d="M 435 350 C 433 335 433 322 435 312 L 465 312 C 467 322 467 335 465 350"/>
+        <path d="M 428 312 C 428 300 430 292 450 292 C 470 292 472 300 472 312"/>
+        <line x1="428" y1="300" x2="472" y2="300"/>
+        <path d="M 415 460 C 430 466 470 466 485 460" opacity="0.55"/>
+        <path d="M 450 292 C 448 265 430 250 410 235 C 388 219 380 195 392 172 C 402 152 425 145 445 155 C 462 163 468 182 458 198 C 450 210 434 212 428 200 C 423 190 430 180 440 183 C 448 185 450 194 444 198"/>
+        <path d="M 410 235 C 392 232 378 240 372 256 C 367 270 374 284 388 286 C 400 288 409 279 406 267 C 404 259 396 256 391 262"/>
+        <path d="M 392 172 C 375 168 362 175 358 190 C 355 202 363 213 375 213 C 385 213 391 205 388 196"/>
+        <path d="M 445 155 C 452 138 470 130 486 138 C 500 145 504 161 494 172 C 486 180 474 178 473 167"/>
+        <path d="M 415 250 C 405 258 400 270 405 280"/>
+        <path d="M 468 190 C 478 195 484 205 480 216"/>
+      </g>
+      <circle cx="440" cy="199" r="4" fill="currentColor"/>
+      <circle cx="493" cy="155" r="3" fill="currentColor"/></svg>
+        `;
+        card.innerHTML = `
+          ${p.categoria === 'nicho' ? '<div class="nicho-badge">NICHO</div>' : ''}
+          ${iconHtml}
+          <div class="insp"><span class="insp-label">Inspirado em</span><span class="insp-name">${p.insp}</span></div>
+          <div class="veraz-name">${p.nome} <span class="ml-tag">60ml</span></div>
+          <div class="blurb">${p.blurb}</div>
+          ${(p.precoOriginal && showBadge) ? '<div class="launch-badge">VALOR EXCLUSIVO</div>' : ''}
+          <div class="price-row">
+            ${p.precoOriginal ? `<span class="price-old">${fmt(p.precoOriginal)}</span>` : ''}
+            <span class="price-main">${fmt(p.preco)}</span>
+            <span class="price-decant">tester 5ml ${fmt(p.decant)}</span>
+          </div>
+          <button class="buy-btn" data-idx="${idx}">Comprar</button>
+        `;
+        targetGrid.appendChild(card);
+      });
     });
   }
-  updateCartCount();
-  saveCart();
-  document.getElementById('pAddedMsg').classList.add('show');
-});
-document.getElementById('pGoCart').addEventListener('click', e => { e.preventDefault(); closeProduct(); openCart(); });
-
-const cartOverlay = document.getElementById('cartOverlay');
-document.getElementById('cartBtn').addEventListener('click', openCart);
-document.getElementById('cartClose').addEventListener('click', closeCart);
-cartOverlay.addEventListener('click', e => { if(e.target === cartOverlay) closeCart(); });
-
-function openCart(){ renderCart(); cartOverlay.classList.add('open'); }
-function closeCart(){ cartOverlay.classList.remove('open'); }
-
-function cartItemCount(){ return cart.reduce((s,i) => s + i.qty, 0); }
-function cartSubtotal(){ return cart.reduce((s,i) => s + i.unitPrice * i.qty, 0); }
-
-function updateCartCount(){
-  const count = cartItemCount();
-  const el = document.getElementById('cartCount');
-  el.textContent = count;
-  el.hidden = count === 0;
-}
-updateCartCount();
-
-function renderCart(){
-  const itemsBox = document.getElementById('cartItems');
-  const emptyBox = document.getElementById('cartEmpty');
-  const foot = document.getElementById('cartFoot');
-  if(cart.length === 0){
-    itemsBox.innerHTML = '';
-    emptyBox.style.display = 'block';
-    foot.hidden = true;
-    return;
+  function renderCards(){
+    renderProductGrid(PRODUCTS, [['gridFem','feminino'], ['gridMasc','masculino']], 'main', true);
+    renderProductGrid(ESSENCIAS, [['gridEssFem','feminino'], ['gridEssMasc','masculino'], ['gridEssUnissex','unissex']], 'ess', false);
   }
-  emptyBox.style.display = 'none';
-  foot.hidden = false;
-  itemsBox.innerHTML = cart.map((item, idx) => `
-    <div class="cart-item">
-      <img src="${item.foto}" alt="${item.nome}">
-      <div class="ci-info">
-        <div class="ci-name">${item.nome}</div>
-        <div class="ci-size">${item.sizeLabel}</div>
+  renderCards();
+
+  // ---------- Dados estruturados de produto (SEO) ----------
+  (function(){
+    const allProducts = [];
+    if(typeof PRODUCTS !== 'undefined') allProducts.push(...PRODUCTS);
+    if(typeof ESSENCIAS !== 'undefined') allProducts.push(...ESSENCIAS);
+    if(allProducts.length === 0) return;
+
+    const itemListElements = allProducts.map((p, idx) => ({
+      "@type": "Product",
+      "name": `VERAZ ${p.nome} (inspirado em ${p.insp})`,
+      "description": p.blurb || '',
+      "image": p.foto ? `https://verazessencias.com.br/${p.foto.split('?')[0]}` : undefined,
+      "brand": { "@type": "Brand", "name": "VERAZ Essências" },
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "BRL",
+        "price": p.preco,
+        "availability": "https://schema.org/InStock",
+        "url": "https://verazessencias.com.br/"
+      }
+    }));
+
+    const schema = {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "itemListElement": itemListElements
+    };
+
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.textContent = JSON.stringify(schema);
+    document.head.appendChild(script);
+  })();
+
+  function renderTesterList(){
+    const container = document.getElementById('testerList');
+    if(!container) return;
+    container.innerHTML = "";
+    const allItems = [
+      ...PRODUCTS.map((p, idx) => ({p, idx, source:'main'})),
+      ...ESSENCIAS.map((p, idx) => ({p, idx, source:'ess'})),
+    ];
+    allItems.forEach(({p, idx, source}) => {
+      const row = document.createElement('div');
+      row.className = 'tester-row';
+      row.dataset.idx = idx;
+      row.dataset.source = source;
+      row.dataset.testermode = '1';
+      const photoHtml = p.foto ? `
+        <div class="tester-row-photo"><img src="${p.foto}" alt="Frasco VERAZ ${p.nome}" loading="lazy" decoding="async"></div>
+      ` : `
+        <div class="tester-row-photo"><svg viewBox="340 115 175 415" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M 410 470 C 405 430 402 400 408 375 C 412 358 420 350 450 350 C 480 350 488 358 492 375 C 498 400 495 430 490 470 C 493 495 493 515 450 518 C 407 515 407 495 410 470 Z"/>
+          <path d="M 435 350 C 433 335 433 322 435 312 L 465 312 C 467 322 467 335 465 350"/>
+          <path d="M 428 312 C 428 300 430 292 450 292 C 470 292 472 300 472 312"/>
+          <line x1="428" y1="300" x2="472" y2="300"/>
+        </svg></div>
+      `;
+      row.innerHTML = `
+        ${photoHtml}
+        <div class="tester-row-info">
+          <span class="tester-row-insp">Inspirado em ${p.insp}</span>
+          <span class="tester-row-name">${p.nome}</span>
+        </div>
+        <div class="tester-row-price">
+          ${p.decantOriginal ? `<span class="tester-row-old">${fmt(p.decantOriginal)}</span>` : ''}
+          <span class="tester-row-main">${fmt(p.decant)}</span>
+        </div>
+        <button class="tester-row-btn">Comprar</button>
+      `;
+      container.appendChild(row);
+    });
+  }
+  renderTesterList();
+
+  // ---------- Revelação suave ao rolar a página ----------
+  (function(){
+    const revealTargets = document.querySelectorAll('.section-head, .card, .club-card, .tester-row, .stat-box');
+    if(!('IntersectionObserver' in window) || revealTargets.length === 0) return;
+    revealTargets.forEach(el => el.classList.add('reveal-init'));
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          entry.target.classList.add('reveal-in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    revealTargets.forEach(el => io.observe(el));
+  })();
+
+  // ---------- Abre automaticamente o produto vindo do Diagnóstico ----------
+  (function(){
+    const params = new URLSearchParams(window.location.search);
+    const produtoNome = params.get('produto');
+    const fonte = params.get('fonte');
+    if(!produtoNome) return;
+    const sourceList = fonte === 'ess' ? ESSENCIAS : PRODUCTS;
+    const found = sourceList.find(p => p.insp === produtoNome);
+    if(found){
+      setTimeout(()=>{
+        currentProduct = found;
+        currentSize = 'frasco';
+        currentQty = 1;
+        openModal();
+      }, 400);
+    }
+  })();
+
+  // ---------- Setinha "arraste pra ver mais": some depois do primeiro scroll ----------
+  (function(){
+    document.querySelectorAll('.scroll-area').forEach(area => {
+      const scroller = area.querySelector('.grid, .ess-teaser-grid');
+      const hint = area.querySelector('.scroll-hint');
+      if(!scroller || !hint) return;
+      scroller.addEventListener('scroll', () => {
+        if(scroller.scrollLeft > 12) hint.style.opacity = '0';
+      }, { passive:true });
+    });
+  })();
+
+  // ---------- Faixa do topo com mensagens alternando ----------
+  (function(){
+    const textEl = document.getElementById('launchBarText');
+    if(!textEl) return;
+    const mensagens = [
+      'VERAZ CHEGOU — PREÇO DE LANÇAMENTO NAS 10 ESSÊNCIAS',
+      'CLUBE VERAZ — COMPRE 5, LEVE O 6º DE PRESENTE',
+      'KIT DIA DOS PAIS — TRÊS FORMAS DE DIZER "EU TE CONHEÇO"',
+    ];
+    let idx = 0;
+    setInterval(()=>{
+      idx = (idx + 1) % mensagens.length;
+      textEl.style.opacity = '0';
+      setTimeout(()=>{
+        textEl.textContent = mensagens[idx];
+        textEl.style.opacity = '1';
+      }, 300);
+    }, 4000);
+  })();
+
+  // ---------- Popup promocional de lançamento (só na home, 1x por sessão) ----------
+  (function(){
+    const promoBackdrop = document.getElementById('promoBackdrop');
+    if(!promoBackdrop) return;
+    const alreadyShown = sessionStorage.getItem('verazPromoShown');
+    function closePromo(){ promoBackdrop.classList.remove('open'); }
+    function openPromo(){
+      promoBackdrop.classList.add('open');
+      sessionStorage.setItem('verazPromoShown', '1');
+    }
+    if(!alreadyShown){
+      setTimeout(openPromo, 1800);
+    }
+    const closeBtn = document.getElementById('promoClose');
+    const skipBtn = document.getElementById('promoSkip');
+    const ctaBtn = document.getElementById('promoCta');
+    const ctaBtn2 = document.getElementById('promoCtaBtn');
+    if(closeBtn) closeBtn.addEventListener('click', closePromo);
+    if(skipBtn) skipBtn.addEventListener('click', closePromo);
+    if(ctaBtn) ctaBtn.addEventListener('click', closePromo);
+    if(ctaBtn2) ctaBtn2.addEventListener('click', closePromo);
+    promoBackdrop.addEventListener('click', (e)=>{ if(e.target === promoBackdrop) closePromo(); });
+  })();
+
+  // ---------- Nossas Essências (abas) ----------
+  function switchEssTab(tabName){
+    document.querySelectorAll('.ess-tab').forEach(t => t.classList.toggle('active', t.dataset.esstab === tabName));
+    document.querySelectorAll('.ess-panel').forEach(p => p.classList.toggle('active', p.dataset.esspanel === tabName));
+  }
+  document.querySelectorAll('.ess-tab').forEach(tab=>{
+    tab.addEventListener('click', (e)=>{
+      e.preventDefault();
+      switchEssTab(tab.dataset.esstab);
+    });
+  });
+
+  // ---------- Mais da VERAZ (abas) ----------
+  function switchMvTab(tabName){
+    document.querySelectorAll('.mv-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tabName));
+    document.querySelectorAll('.mv-panel').forEach(p => p.classList.toggle('active', p.dataset.panel === tabName));
+  }
+  document.querySelectorAll('.mv-tab').forEach(tab=>{
+    tab.addEventListener('click', (e)=>{
+      e.preventDefault();
+      switchMvTab(tab.dataset.tab);
+    });
+  });
+  function handleMvHash(){
+    const h = window.location.hash.replace('#','');
+    if(['decants','clube'].includes(h)){
+      switchMvTab(h);
+      const mv = document.getElementById('moreVeraz');
+      if(mv) mv.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+  }
+  window.addEventListener('hashchange', handleMvHash);
+  if(window.location.hash) handleMvHash();
+
+  const modalBackdrop = document.getElementById('modalBackdrop');
+  const cartBackdrop = document.getElementById('cartBackdrop');
+  let currentProduct = null;
+  let currentSize = 'frasco';
+  let currentQty = 1;
+
+  document.addEventListener('click', (e)=>{
+    const card = e.target.closest('.card, .tester-row');
+    if(!card) return;
+    const sourceList = card.dataset.source === 'ess' ? ESSENCIAS : PRODUCTS;
+    currentProduct = sourceList[card.dataset.idx];
+    currentSize = card.dataset.testermode === '1' ? 'decant' : 'frasco';
+    currentQty = 1;
+    openModal();
+  });
+
+  function itemUnitPrice(product, size){ return size === 'frasco' ? product.preco : product.decant; }
+
+  function openModal(){
+    document.getElementById('modalTitle').textContent = currentProduct.insp;
+    document.getElementById('modalSub').textContent = currentProduct.nome;
+    document.getElementById('modalBlurb').textContent = currentProduct.blurb;
+    document.getElementById('modalNotes').innerHTML = `
+      <div class="note-row"><span class="note-label">Topo</span><span>${currentProduct.notas.topo}</span></div>
+      <div class="note-row"><span class="note-label">Coração</span><span>${currentProduct.notas.coracao}</span></div>
+      <div class="note-row"><span class="note-label">Fundo</span><span>${currentProduct.notas.fundo}</span></div>
+    `;
+    const nichoBadge = document.getElementById('modalNichoBadge');
+    nichoBadge.style.display = currentProduct.categoria === 'nicho' ? 'block' : 'none';
+    const combinaBox = document.getElementById('modalCombina');
+    if(currentProduct.combina){
+      combinaBox.innerHTML = `<strong>Combina com</strong>${currentProduct.combina}`;
+      combinaBox.style.display = 'block';
+    }else{
+      combinaBox.style.display = 'none';
+    }
+    document.querySelectorAll('.size-tab').forEach(t=>t.classList.toggle('active', t.dataset.size===currentSize));
+    document.getElementById('qtyVal').textContent = currentQty;
+    document.getElementById('addCartConfirm').classList.remove('show');
+    updateItemSubtotal();
+    modalBackdrop.classList.add('open');
+    document.getElementById('floatWpp').style.display='none'; document.getElementById('floatIg').style.display='none';
+  }
+  document.getElementById('modalClose').addEventListener('click', ()=> { modalBackdrop.classList.remove('open'); document.getElementById('floatWpp').style.display='flex'; document.getElementById('floatIg').style.display='flex'; });
+  modalBackdrop.addEventListener('click', (e)=>{ if(e.target === modalBackdrop){ modalBackdrop.classList.remove('open'); document.getElementById('floatWpp').style.display='flex'; document.getElementById('floatIg').style.display='flex'; } });
+
+  document.querySelectorAll('.size-tab').forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      currentSize = tab.dataset.size;
+      document.querySelectorAll('.size-tab').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      updateItemSubtotal();
+    });
+  });
+  document.getElementById('qtyMinus').addEventListener('click', ()=>{ if(currentQty>1) currentQty--; document.getElementById('qtyVal').textContent=currentQty; updateItemSubtotal(); });
+  document.getElementById('qtyPlus').addEventListener('click', ()=>{ currentQty++; document.getElementById('qtyVal').textContent=currentQty; updateItemSubtotal(); });
+
+  function updateItemSubtotal(){
+    document.getElementById('itemSubtotal').textContent = fmt(itemUnitPrice(currentProduct, currentSize) * currentQty);
+  }
+
+  let cart = [];
+
+  function addToCartFromModal(){
+    const sizeLabel = currentSize === 'frasco' ? 'Frasco 60ml' : 'Tester 5ml';
+    const unitPrice = itemUnitPrice(currentProduct, currentSize);
+    const key = currentProduct.insp + '|' + currentSize;
+    const existing = cart.find(i => i.key === key);
+    if(existing){
+      existing.qty += currentQty;
+    }else{
+      cart.push({ key, insp: currentProduct.insp, nome: currentProduct.nome, size: currentSize, sizeLabel, unitPrice, qty: currentQty });
+    }
+    updateCartBadge();
+    document.getElementById('addCartConfirm').classList.add('show');
+  }
+  document.getElementById('addToCartBtn').addEventListener('click', addToCartFromModal);
+  document.getElementById('goToCartLink').addEventListener('click', (e)=>{
+    e.preventDefault();
+    modalBackdrop.classList.remove('open');
+    document.getElementById('floatWpp').style.display='flex'; document.getElementById('floatIg').style.display='flex';
+    openCart();
+  });
+
+  const TESTER_PAIR_PRICE = 22.90;
+
+  function cartItemCount(){ return cart.reduce((s,i)=>s+i.qty, 0); }
+
+  function cartBreakdown(){
+    const testerUnits = [];
+    let frascoSubtotal = 0, frascoCount = 0;
+    let kitSubtotal = 0, kitCount = 0;
+
+    cart.forEach(item => {
+      if(item.size === 'decant'){
+        for(let i=0;i<item.qty;i++) testerUnits.push(item.unitPrice);
+      }else if(item.size === 'kit'){
+        kitSubtotal += item.unitPrice * item.qty;
+        kitCount += item.qty;
+      }else{
+        frascoSubtotal += item.unitPrice * item.qty;
+        frascoCount += item.qty;
+      }
+    });
+
+    testerUnits.sort((a,b)=>a-b);
+    const pairs = Math.floor(testerUnits.length/2);
+    const hasOdd = testerUnits.length % 2 === 1;
+    const oddPrice = hasOdd ? testerUnits[testerUnits.length-1] : 0;
+    const testerRawSubtotal = testerUnits.reduce((s,p)=>s+p,0);
+    const testerPairedTotal = (pairs * TESTER_PAIR_PRICE) + oddPrice;
+    const testerSavings = testerRawSubtotal - testerPairedTotal;
+
+    const discountEligibleSubtotal = frascoSubtotal + (hasOdd ? oddPrice : 0);
+    const discountEligibleUnits = frascoCount + (hasOdd ? 1 : 0);
+    const generalDiscountRate = cartItemCount() >= 2 ? 0.10 : 0;
+    const generalDiscountValue = discountEligibleSubtotal * generalDiscountRate;
+
+    const subtotal = frascoSubtotal + kitSubtotal + testerRawSubtotal;
+    const totalDiscount = generalDiscountValue + testerSavings;
+    const total = subtotal - totalDiscount;
+
+    return { subtotal, testerSavings, generalDiscountValue, totalDiscount, total, pairs, hasOdd, testerCount: testerUnits.length };
+  }
+
+  function cartSubtotal(){ return cartBreakdown().subtotal; }
+  function cartDiscountValue(){ return cartBreakdown().totalDiscount; }
+  function cartTotal(){ return cartBreakdown().total + cartShippingPrice(); }
+
+  function updateCartBadge(){
+    const count = cartItemCount();
+    const badge = document.getElementById('cartBadge');
+    badge.textContent = count;
+    badge.classList.toggle('hidden', count === 0);
+  }
+  updateCartBadge();
+
+  document.getElementById('cartBtn').addEventListener('click', openCart);
+  document.getElementById('cartClose').addEventListener('click', closeCart);
+  cartBackdrop.addEventListener('click', (e)=>{ if(e.target === cartBackdrop) closeCart(); });
+
+  function openCart(){
+    renderCart();
+    showCartStep1();
+    cartBackdrop.classList.add('open');
+    document.getElementById('floatWpp').style.display='none'; document.getElementById('floatIg').style.display='none';
+  }
+  function closeCart(){
+    cartBackdrop.classList.remove('open');
+    document.getElementById('floatWpp').style.display='flex'; document.getElementById('floatIg').style.display='flex';
+  }
+
+  function showCartStep1(){
+    document.getElementById('cartStep1').style.display = 'block';
+    document.getElementById('cartStep2').style.display = 'none';
+  }
+  function showCartStep2(){
+    document.getElementById('cartStep1').style.display = 'none';
+    document.getElementById('cartStep2').style.display = 'block';
+  }
+  document.getElementById('cartGoCheckout').addEventListener('click', showCartStep2);
+  document.getElementById('cartContinueShopping').addEventListener('click', closeCart);
+  document.getElementById('cartBackStep1').addEventListener('click', showCartStep1);
+
+  function renderCart(){
+    const itemsBox = document.getElementById('cartItems');
+    const emptyBox = document.getElementById('cartEmpty');
+    const summaryBlock = document.getElementById('cartSummaryBlock');
+
+    if(cart.length === 0){
+      itemsBox.innerHTML = '';
+      emptyBox.style.display = 'block';
+      summaryBlock.style.display = 'none';
+      return;
+    }
+    emptyBox.style.display = 'none';
+    summaryBlock.style.display = 'block';
+
+    itemsBox.innerHTML = cart.map((item, idx) => `
+      <div class="cart-item">
+        <div class="ci-info">
+          <div class="ci-name">${item.nome}</div>
+          <div class="ci-size">${item.sizeLabel}</div>
+        </div>
         <div class="ci-qty">
           <button data-act="minus" data-idx="${idx}">−</button>
           <span>${item.qty}</span>
           <button data-act="plus" data-idx="${idx}">+</button>
         </div>
+        <div class="ci-price">${fmt(item.unitPrice * item.qty)}</div>
         <span class="ci-remove" data-act="remove" data-idx="${idx}">remover</span>
       </div>
-      <div class="ci-price">${fmt(item.unitPrice * item.qty)}</div>
-    </div>
-  `).join('');
-  document.getElementById('cartSubtotal').textContent = fmt(cartSubtotal());
-}
+    `).join('');
 
-document.getElementById('cartItems').addEventListener('click', e => {
-  const btn = e.target.closest('[data-act]');
-  if(!btn) return;
-  const idx = parseInt(btn.dataset.idx, 10);
-  if(btn.dataset.act === 'plus') cart[idx].qty++;
-  if(btn.dataset.act === 'minus'){ cart[idx].qty--; if(cart[idx].qty <= 0) cart.splice(idx,1); }
-  if(btn.dataset.act === 'remove') cart.splice(idx,1);
-  updateCartCount();
-  saveCart();
-  renderCart();
-});
+    document.getElementById('cartSubtotal').textContent = fmt(cartSubtotal());
+    const bd = cartBreakdown();
+    const discountRow = document.getElementById('cartDiscountRow');
+    if(bd.totalDiscount > 0.001){
+      discountRow.style.display = 'flex';
+      let label = 'Desconto';
+      if(bd.pairs > 0 && bd.generalDiscountValue > 0.001) label = `Desconto (${bd.pairs}x par de testers + 10% multi-produto)`;
+      else if(bd.pairs > 0) label = `Desconto (${bd.pairs}x par de testers, R$22,90)`;
+      else label = 'Desconto (2+ produtos, 10%)';
+      discountRow.querySelector('span').textContent = label;
+      document.getElementById('cartDiscountVal').textContent = '-' + fmt(bd.totalDiscount);
+    }else{
+      discountRow.style.display = 'none';
+    }
 
-// ---------- Checkout ----------
-const checkoutOverlay = document.getElementById('checkoutOverlay');
-let shipMode = 'retirada';
-let checkoutStep = 1;
-
-document.getElementById('cartCheckoutBtn').addEventListener('click', () => {
-  if(cart.length === 0) return;
-  closeCart();
-  goToStep(1);
-  renderSummary();
-  checkoutOverlay.classList.add('open');
-});
-document.getElementById('checkoutClose').addEventListener('click', () => checkoutOverlay.classList.remove('open'));
-checkoutOverlay.addEventListener('click', e => { if(e.target === checkoutOverlay) checkoutOverlay.classList.remove('open'); });
-
-function goToStep(n){
-  checkoutStep = n;
-  document.querySelectorAll('.checkout-step-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById(n === 1 ? 'stepDados' : n === 2 ? 'stepEntrega' : 'stepPagamento').classList.add('active');
-  document.querySelectorAll('.step').forEach(s => {
-    const sn = parseInt(s.dataset.step, 10);
-    s.classList.toggle('active', sn === n);
-    s.classList.toggle('done', sn < n);
-  });
-}
-
-document.getElementById('goStep2').addEventListener('click', () => {
-  const nome = document.getElementById('custNome').value.trim();
-  const tel = document.getElementById('custTelefone').value.trim();
-  const email = document.getElementById('custEmail').value.trim();
-  const err = document.getElementById('dadosError');
-  if(!nome || !tel || !email){ err.textContent = 'Preencha nome, WhatsApp e e-mail.'; return; }
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ err.textContent = 'Digite um e-mail válido.'; return; }
-  err.textContent = '';
-  document.getElementById('dadosResumo').textContent = `${nome} · ${email} · ${tel}`;
-  goToStep(2);
-});
-document.getElementById('backStep1').addEventListener('click', () => goToStep(1));
-
-document.querySelectorAll('.ship-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    shipMode = tab.dataset.ship;
-    document.querySelectorAll('.ship-tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    document.getElementById('enderecoBlock').hidden = shipMode === 'retirada';
-    renderSummary();
-  });
-});
-
-document.getElementById('goStep3').addEventListener('click', () => {
-  const err = document.getElementById('entregaError');
-  if(shipMode === 'correios' && !document.getElementById('custEndereco').value.trim()){
-    err.textContent = 'Informe o endereço completo.';
-    return;
+    updateCartTotal();
   }
-  err.textContent = '';
-  goToStep(3);
-  renderSummary();
-  renderPix();
-  updateWppFinishLink();
-});
-document.getElementById('backStep2').addEventListener('click', () => goToStep(2));
 
-document.querySelectorAll('.pay-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.pay-tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.pay-panel').forEach(p => p.classList.remove('active'));
-    tab.classList.add('active');
-    document.getElementById(tab.dataset.pay === 'pix' ? 'payPix' : 'payWpp').classList.add('active');
+  document.getElementById('cartItems').addEventListener('click', (e)=>{
+    const btn = e.target.closest('[data-act]');
+    if(!btn) return;
+    const idx = parseInt(btn.dataset.idx, 10);
+    if(btn.dataset.act === 'plus') cart[idx].qty++;
+    if(btn.dataset.act === 'minus'){ cart[idx].qty--; if(cart[idx].qty <= 0) cart.splice(idx,1); }
+    if(btn.dataset.act === 'remove') cart.splice(idx,1);
+    updateCartBadge();
+    renderCart();
   });
-});
 
-function shippingPrice(){ return shipMode === 'retirada' ? 0 : CONFIG.fretePadrao; }
-function totalComFrete(){ return cartSubtotal() + shippingPrice(); }
-function totalComDescontoPix(){ return totalComFrete() * (1 - CONFIG.descontoPixPct); }
+  let cartShipMode = 'retirada';
+  let cartShipPrice = 0;
+  let cartShipNote = SHIPPING.retirada.note;
+  let cartShipLabel = SHIPPING.retirada.label;
 
-function renderSummary(){
-  const box = document.getElementById('summaryItems');
-  box.innerHTML = cart.map(i => `
-    <div class="summary-item">
-      <img src="${i.foto}" alt="${i.nome}">
-      <div style="flex:1;">
-        <div class="si-name">${i.nome}</div>
-        <div class="si-meta">${i.sizeLabel} · ${i.qty}x</div>
-      </div>
-      <div>${fmt(i.unitPrice * i.qty)}</div>
-    </div>
-  `).join('');
-  document.getElementById('sumSubtotal').textContent = fmt(cartSubtotal());
-  document.getElementById('sumFrete').textContent = shipMode === 'retirada' ? 'Grátis (retirada)' : fmt(shippingPrice());
+  document.querySelectorAll('#cartShipTabs .ship-tab').forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      cartShipMode = tab.dataset.ship;
+      document.querySelectorAll('#cartShipTabs .ship-tab').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('cepBlock').style.display = cartShipMode === 'correios' ? 'block' : 'none';
+      document.getElementById('custEnderecoBlock').style.display = cartShipMode === 'retirada' ? 'none' : 'block';
+      if(cartShipMode === 'retirada'){ cartShipPrice = 0; cartShipNote = SHIPPING.retirada.note; cartShipLabel = SHIPPING.retirada.label; }
+      if(cartShipMode === 'correios'){ cartShipPrice = 0; cartShipNote = 'Informe o CEP e calcule o frete.'; cartShipLabel = 'Correios'; }
+      updateCartTotal();
+    });
+  });
 
-  const descontoRow = document.getElementById('sumDescontoRow');
-  const payingPix = document.querySelector('.pay-tab.active') ? document.querySelector('.pay-tab.active').dataset.pay === 'pix' : true;
-  if(payingPix){
-    descontoRow.hidden = false;
-    document.getElementById('sumDesconto').textContent = '-' + fmt(totalComFrete() - totalComDescontoPix());
-    document.getElementById('sumTotal').textContent = fmt(totalComDescontoPix());
-  }else{
-    descontoRow.hidden = true;
-    document.getElementById('sumTotal').textContent = fmt(totalComFrete());
-  }
-}
-document.querySelectorAll('.pay-tab').forEach(tab => tab.addEventListener('click', renderSummary));
+  const CORREIOS_REGIOES = {
+    SP_CAPITAL: { price: 12.90, prazo: '1 a 3 dias úteis' },
+    SP_INTERIOR:{ price: 18.90, prazo: '2 a 5 dias úteis' },
+    SUDESTE:    { price: 24.90, prazo: '3 a 6 dias úteis' },
+    SUL:        { price: 27.90, prazo: '4 a 7 dias úteis' },
+    CENTRO_OESTE:{ price: 29.90, prazo: '5 a 8 dias úteis' },
+    NORDESTE:   { price: 34.90, prazo: '6 a 10 dias úteis' },
+    NORTE:      { price: 39.90, prazo: '7 a 14 dias úteis' },
+  };
+  const UF_TO_REGIAO = {
+    SP:'SP_INTERIOR', RJ:'SUDESTE', MG:'SUDESTE', ES:'SUDESTE',
+    PR:'SUL', SC:'SUL', RS:'SUL',
+    DF:'CENTRO_OESTE', GO:'CENTRO_OESTE', MT:'CENTRO_OESTE', MS:'CENTRO_OESTE',
+    BA:'NORDESTE', SE:'NORDESTE', AL:'NORDESTE', PE:'NORDESTE', PB:'NORDESTE', RN:'NORDESTE', CE:'NORDESTE', PI:'NORDESTE', MA:'NORDESTE',
+    TO:'NORTE', PA:'NORTE', AP:'NORTE', AM:'NORTE', RR:'NORTE', RO:'NORTE', AC:'NORTE',
+  };
 
-function updateWppFinishLink(){
-  const nome = document.getElementById('custNome').value.trim();
-  const tel = document.getElementById('custTelefone').value.trim();
-  const email = document.getElementById('custEmail').value.trim();
-  const endereco = shipMode === 'retirada' ? 'Retirar em mãos' : document.getElementById('custEndereco').value.trim();
-  const itens = cart.map(i => `${i.qty}x ${i.nome} (${i.sizeLabel})`).join('\n');
-  const msg = `Oi! Quero fechar meu pedido VERAZ:\n\nNome: ${nome}\nWhatsApp: ${tel}\nE-mail: ${email}\nEndereço: ${endereco}\n\nItens:\n${itens}\n\nTotal: ${fmt(totalComFrete())}`;
-  document.getElementById('wppFinishBtn').href = `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(msg)}`;
-  document.getElementById('floatWpp').href = `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent("Oi! Vim pelo site da VERAZ e queria saber mais sobre as essências.")}`;
-}
-document.getElementById('floatWpp').href = `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent("Oi! Vim pelo site da VERAZ e queria saber mais sobre as essências.")}`;
+  document.getElementById('cepCalcBtn').addEventListener('click', calcularFreteCEP);
+  document.getElementById('cepInput').addEventListener('keydown', (e)=>{ if(e.key==='Enter') calcularFreteCEP(); });
+  document.getElementById('cepInput').addEventListener('input', (e)=>{
+    let v = e.target.value.replace(/\D/g,'').slice(0,8);
+    if(v.length > 5) v = v.slice(0,5) + '-' + v.slice(5);
+    e.target.value = v;
+  });
 
-// ---------- Pix (BR Code / QR estático) ----------
-function crc16(payload){
-  let crc = 0xFFFF;
-  for(let i=0;i<payload.length;i++){
-    crc ^= (payload.charCodeAt(i) << 8);
-    for(let j=0;j<8;j++){
-      crc = (crc & 0x8000) ? ((crc << 1) ^ 0x1021) & 0xFFFF : (crc << 1) & 0xFFFF;
+  async function calcularFreteCEP(){
+    const raw = document.getElementById('cepInput').value.replace(/\D/g,'');
+    const resultBox = document.getElementById('cepResult');
+    document.getElementById('cepInput').blur();
+    if(raw.length !== 8){
+      resultBox.innerHTML = '<span class="cep-error">CEP inválido. Digite os 8 números.</span>';
+      resultBox.classList.add('show');
+      resultBox.scrollIntoView({behavior:'smooth', block:'center'});
+      return;
+    }
+    resultBox.innerHTML = 'Calculando frete real...';
+    resultBox.classList.add('show');
+    resultBox.scrollIntoView({behavior:'smooth', block:'center'});
+
+    try{
+      const res = await fetch(`/.netlify/functions/frete?cep=${raw}`);
+      const data = await res.json();
+      if(data.options && data.options.length > 0){
+        renderShippingOptions(data.options, resultBox);
+        return;
+      }
+    }catch(err){
+      console.error('Melhor Envio (Netlify Function) indisponível, tentando alternativa:', err);
+    }
+
+    if(CONFIG.sheetsUrl){
+      try{
+        const res = await fetch(`${CONFIG.sheetsUrl}?action=frete&cep=${raw}`);
+        const data = await res.json();
+        if(data.status === 'ok'){
+          cartShipPrice = data.preco;
+          cartShipNote = `Prazo estimado: ${data.prazo}.`;
+          cartShipLabel = `${data.transportadora} ${data.servico}`;
+          resultBox.innerHTML = `📦 ${data.transportadora} ${data.servico} — <strong>${fmt(data.preco)}</strong> (${data.prazo})`;
+          updateCartTotal();
+          setTimeout(()=> document.getElementById('modalTotal').scrollIntoView({behavior:'smooth', block:'center'}), 150);
+          return;
+        }
+      }catch(err){
+        console.error('Apps Script indisponível, usando estimativa:', err);
+      }
+    }
+
+    try{
+      const res = await fetch(`https://viacep.com.br/ws/${raw}/json/`);
+      const data = await res.json();
+      if(data.erro){
+        resultBox.innerHTML = '<span class="cep-error">CEP não encontrado.</span>';
+        return;
+      }
+      let regiao;
+      if(data.uf === 'SP' && data.localidade === 'São Paulo') regiao = 'SP_CAPITAL';
+      else regiao = UF_TO_REGIAO[data.uf] || 'NORDESTE';
+      const info = CORREIOS_REGIOES[regiao];
+      cartShipPrice = info.price;
+      cartShipNote = `Prazo estimado: ${info.prazo}. (estimativa)`;
+      cartShipLabel = `Correios — ${data.localidade}/${data.uf}`;
+      resultBox.innerHTML = `📍 ${data.localidade}/${data.uf} — frete estimado: <strong>${fmt(info.price)}</strong> (${info.prazo})`;
+      updateCartTotal();
+      setTimeout(()=> document.getElementById('modalTotal').scrollIntoView({behavior:'smooth', block:'center'}), 150);
+    }catch(err){
+      resultBox.innerHTML = '<span class="cep-error">Não foi possível calcular agora. Tenta de novo em instantes.</span>';
+      console.error('CEP error:', err);
     }
   }
-  return crc.toString(16).toUpperCase().padStart(4,'0');
-}
-function tlv(id, value){ return `${id}${String(value.length).padStart(2,'0')}${value}`; }
-function stripAccents(str){ return str.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^\x20-\x7E]/g,''); }
-function buildPixPayload(amount){
-  const key = CONFIG.pixKey;
-  const name = stripAccents(CONFIG.merchantName).substring(0,25);
-  const city = stripAccents(CONFIG.merchantCity).substring(0,15);
-  const amountStr = amount.toFixed(2);
-  const merchantAccountInfo = tlv('00','br.gov.bcb.pix') + tlv('01', key);
-  const additionalData = tlv('05', '***');
-  let payload =
-    tlv('00','01') + tlv('26', merchantAccountInfo) + tlv('52','0000') + tlv('53','986') +
-    tlv('54', amountStr) + tlv('58','BR') + tlv('59', name) + tlv('60', city) +
-    tlv('62', additionalData) + '6304';
-  return payload + crc16(payload);
-}
-function renderPix(){
-  const box = document.getElementById('qrcode-box');
-  box.innerHTML = '';
-  try{
-    if(typeof QRCode === 'undefined') throw new Error('lib not loaded');
-    const payload = buildPixPayload(totalComDescontoPix());
-    new QRCode(box, { text: payload, width: 180, height: 180, colorDark:"#1B120A", colorLight:"#ffffff" });
-  }catch(err){
-    box.innerHTML = '<p style="font-size:12.5px;color:#8B2E3A;text-align:center;">Não foi possível carregar o QR Code. Tenta recarregar, ou finaliza pelo WhatsApp.</p>';
+
+  function renderShippingOptions(options, resultBox){
+    resultBox.innerHTML = `
+      <div class="ship-options-label">Escolha a modalidade de envio:</div>
+      <div class="ship-options-list">
+        ${options.map((o, i) => `
+          <label class="ship-option">
+            <input type="radio" name="shipOption" value="${i}" ${i===0 ? 'checked' : ''}>
+            <span class="ship-option-name">${o.company} ${o.service}</span>
+            <span class="ship-option-time">até ${o.deliveryTime} dias úteis</span>
+            <span class="ship-option-price">${fmt(o.price)}</span>
+          </label>
+        `).join('')}
+      </div>
+    `;
+    resultBox.querySelectorAll('input[name="shipOption"]').forEach(radio=>{
+      radio.addEventListener('change', ()=>{
+        applyShippingOption(options[parseInt(radio.value,10)]);
+      });
+    });
+    applyShippingOption(options[0]);
   }
-}
+
+  function applyShippingOption(opt){
+    cartShipPrice = opt.price;
+    cartShipNote = `Prazo estimado: até ${opt.deliveryTime} dias úteis.`;
+    cartShipLabel = `${opt.company} ${opt.service}`;
+    updateCartTotal();
+  }
+
+  function cartShippingPrice(){ return cartShipMode === 'retirada' ? 0 : cartShipPrice; }
+
+  function updateCartTotal(){
+    document.getElementById('modalTotal').textContent = fmt(cartTotal());
+    document.getElementById('modalShippingNote').textContent =
+      cartShipMode === 'retirada' ? cartShipNote : `${cartShipLabel}: ${fmt(cartShippingPrice())}. ${cartShipNote}`;
+
+    if(cart.length > 0){
+      const itemsList = cart.map(i => `${i.qty}x ${i.nome} (${i.sizeLabel})`).join('\n');
+      const discountLine = cartDiscountValue() > 0.001 ? `\nDesconto: -${fmt(cartDiscountValue())}` : '';
+      const shipLine = cartShippingPrice() > 0 ? `\nEntrega (${cartShipLabel}): ${fmt(cartShippingPrice())}` : `\nEntrega: ${cartShipLabel}`;
+      const msg = `Oi! Quero fechar meu pedido VERAZ:\n\nNome: ${document.getElementById('custNome').value.trim()}\nTelefone: ${document.getElementById('custTelefone').value.trim()}\nE-mail: ${document.getElementById('custEmail').value.trim()}\nEndereço: ${cartShipMode === 'retirada' ? 'Retirar em mãos' : document.getElementById('custEndereco').value.trim()}\n\nItens:\n${itemsList}${discountLine}${shipLine}\nTotal: ${fmt(cartTotal())}`;
+      document.getElementById('wppBuyBtn').href = wppLink(msg);
+    }
+    renderPix();
+  }
+
+  function validateDelivery(){
+    const nome = document.getElementById('custNome').value.trim();
+    const telefone = document.getElementById('custTelefone').value.trim();
+    const email = document.getElementById('custEmail').value.trim();
+    const endereco = document.getElementById('custEndereco').value.trim();
+    const errorBox = document.getElementById('deliveryError');
+
+    if(!nome || !telefone || !email || (cartShipMode !== 'retirada' && !endereco)){
+      errorBox.textContent = 'Preencha nome, telefone, e-mail' + (cartShipMode !== 'retirada' ? ' e endereço' : '') + ' antes de continuar.';
+      errorBox.classList.add('show');
+      return false;
+    }
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+      errorBox.textContent = 'Digite um e-mail válido.';
+      errorBox.classList.add('show');
+      return false;
+    }
+    errorBox.classList.remove('show');
+    return true;
+  }
+
+  function cartSignature(){
+    return cart.map(i => `${i.key}:${i.qty}`).join('|');
+  }
+  let lastOrderSignature = null;
+  let lastLoyaltySignature = null;
+
+  function sendOrderToSheet(){
+    if(!CONFIG.sheetsUrl) return;
+    const sig = cartSignature();
+    if(sig === lastOrderSignature) return; // evita registrar o mesmo pedido de novo só por trocar de aba
+    lastOrderSignature = sig;
+    const itemsList = cart.map(i => `${i.qty}x ${i.nome} (${i.sizeLabel}) — ${fmt(i.unitPrice * i.qty)}`).join(' | ');
+    const payload = {
+      nome: document.getElementById('custNome').value.trim(),
+      telefone: document.getElementById('custTelefone').value.trim(),
+      email: document.getElementById('custEmail').value.trim(),
+      endereco: cartShipMode === 'retirada' ? 'Retirar em mãos' : document.getElementById('custEndereco').value.trim(),
+      itens: itemsList,
+      subtotal: fmt(cartSubtotal()),
+      desconto: cartDiscountValue() > 0.001 ? fmt(cartDiscountValue()) : 'Nenhum',
+      frete: `${cartShipLabel}: ${fmt(cartShippingPrice())}`,
+      total: fmt(cartTotal()),
+      pagamento: document.querySelector('.pay-tab.active').dataset.pay === 'pix' ? 'Pix' : (document.querySelector('.pay-tab.active').dataset.pay === 'card' ? 'Cartão/Pix PagBank' : 'WhatsApp'),
+    };
+    fetch(CONFIG.sheetsUrl, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type': 'text/plain'},
+      body: JSON.stringify(payload),
+    }).catch(err => console.error('Erro ao registrar pedido na planilha:', err));
+  }
+
+  function registerLoyaltyPurchase(){
+    if(!CONFIG.clubeApiUrl || CONFIG.clubeApiUrl.indexOf('COLE_AQUI') === 0) return;
+    const sig = cartSignature();
+    if(sig === lastLoyaltySignature) return; // evita contar o mesmo carrinho 2x (trocar de aba, reabrir, etc.)
+    const phone = document.getElementById('custTelefone').value.trim();
+    const name = document.getElementById('custNome').value.trim();
+    if(!phone) return;
+    // Só frascos de 60ml contam pro Clube VERAZ — testers não contam, pra manter a conta saudável
+    const qtdFrascos = cart.filter(i => i.size === 'frasco').reduce((sum, i) => sum + i.qty, 0);
+    if(qtdFrascos < 1) return;
+    lastLoyaltySignature = sig;
+    fetch(CONFIG.clubeApiUrl, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type': 'text/plain'},
+      body: JSON.stringify({ phone, name, quantidade: qtdFrascos }),
+    }).catch(err => console.error('Erro ao registrar ponto no Clube VERAZ:', err));
+  }
+
+  document.getElementById('wppBuyBtn').addEventListener('click', (e)=>{
+    if(!validateDelivery()){ e.preventDefault(); return; }
+    updateCartTotal();
+    e.target.href = document.getElementById('wppBuyBtn').href;
+    sendOrderToSheet();
+    registerLoyaltyPurchase();
+  });
+
+  const PAY_PANEL_MAP = { wpp: 'panelWpp', pix: 'panelPix', card: 'panelCard' };
+  document.querySelectorAll('.pay-tab').forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      if((tab.dataset.pay === 'pix' || tab.dataset.pay === 'card') && !validateDelivery()) return;
+      document.querySelectorAll('.pay-tab').forEach(t=>t.classList.remove('active'));
+      document.querySelectorAll('.pay-panel').forEach(p=>p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(PAY_PANEL_MAP[tab.dataset.pay]).classList.add('active');
+      if(tab.dataset.pay === 'pix'){
+        renderPix();
+        sendOrderToSheet();
+        registerLoyaltyPurchase();
+      }
+    });
+  });
+
+  const cardPayBtn = document.getElementById('cardPayBtn');
+  if(cardPayBtn && CONFIG.pagbankAtivo === false){
+    cardPayBtn.textContent = 'Em breve';
+    cardPayBtn.disabled = true;
+    cardPayBtn.style.opacity = '0.55';
+    cardPayBtn.style.cursor = 'not-allowed';
+    document.getElementById('cardPayStatus').textContent = 'Pagamento por cartão chegando em breve — por enquanto, usa o WhatsApp ou Pix.';
+  }else if(cardPayBtn){
+    cardPayBtn.addEventListener('click', async ()=>{
+      if(!validateDelivery()) return;
+      if(!CONFIG.pagbankApiUrl || CONFIG.pagbankApiUrl.indexOf('COLE_AQUI') === 0){
+        document.getElementById('cardPayStatus').textContent = 'Pagamento por cartão ainda não configurado. Fale com a gente pelo WhatsApp.';
+        return;
+      }
+      const statusEl = document.getElementById('cardPayStatus');
+      statusEl.textContent = 'Preparando pagamento seguro...';
+      cardPayBtn.disabled = true;
+
+      const payload = {
+        items: cart.map(i => ({ name: `${i.nome} (${i.sizeLabel})`, quantity: i.qty, unitPrice: i.unitPrice })),
+        discountAmount: cartDiscountValue(),
+        shippingAmount: cartShippingPrice(),
+        customerName: document.getElementById('custNome').value.trim(),
+        customerPhone: document.getElementById('custTelefone').value.trim(),
+        customerEmail: document.getElementById('custEmail').value.trim(),
+        customerAddress: cartShipMode === 'retirada' ? 'Retirar em mãos' : document.getElementById('custEndereco').value.trim(),
+      };
+
+      try{
+        const res = await fetch(CONFIG.pagbankApiUrl, {
+          method: 'POST',
+          headers: {'Content-Type': 'text/plain'},
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if(data.payUrl){
+          sendOrderToSheet();
+          registerLoyaltyPurchase();
+          statusEl.textContent = 'Redirecionando pro pagamento seguro...';
+          window.location.href = data.payUrl;
+        }else{
+          let motivo = data.error || 'motivo desconhecido';
+          if(data.details) motivo += ' — detalhes: ' + JSON.stringify(data.details);
+          statusEl.textContent = 'Não foi possível gerar o pagamento: ' + motivo;
+          cardPayBtn.disabled = false;
+          console.error('PagBank checkout recusado:', data);
+        }
+      }catch(err){
+        statusEl.textContent = 'Erro ao conectar com o pagamento. Tenta de novo em instantes.';
+        cardPayBtn.disabled = false;
+        console.error('PagBank checkout error:', err);
+      }
+    });
+  }
+
+  const loyaltyBtn = document.getElementById('loyaltyCheckBtn');
+  if(loyaltyBtn){
+    loyaltyBtn.addEventListener('click', async ()=>{
+      const phoneInput = document.getElementById('loyaltyPhone');
+      const resultEl = document.getElementById('loyaltyResult');
+      const phone = phoneInput.value.trim();
+      if(!phone){
+        resultEl.textContent = 'Digita seu WhatsApp pra consultar.';
+        resultEl.className = 'loyalty-result show';
+        return;
+      }
+      if(!CONFIG.clubeApiUrl || CONFIG.clubeApiUrl.indexOf('COLE_AQUI') === 0){
+        resultEl.textContent = 'Consulta ainda não disponível — fala com a gente no WhatsApp.';
+        resultEl.className = 'loyalty-result show';
+        return;
+      }
+      resultEl.textContent = 'Consultando...';
+      resultEl.className = 'loyalty-result show';
+      try{
+        const res = await fetch(`${CONFIG.clubeApiUrl}?phone=${encodeURIComponent(phone)}`);
+        const data = await res.json();
+        if(!data.found){
+          resultEl.textContent = 'Não encontramos compras com esse número ainda. Depois da sua primeira compra, seus pontos aparecem aqui!';
+        }else if(data.premiosDisponiveis > 0){
+          resultEl.textContent = `🎁 Você tem ${data.premiosDisponiveis} produto(s) grátis disponível(is)! Total de ${data.totalCompras} compras. Chama no WhatsApp pra resgatar.`;
+        }else{
+          resultEl.textContent = `Você já começa ganhando: 2 de presente da VERAZ! Você tem ${data.totalCompras} de 5.`;
+        }
+      }catch(err){
+        resultEl.textContent = 'Não consegui consultar agora. Tenta de novo em instantes.';
+        console.error('Erro ao consultar Clube VERAZ:', err);
+      }
+    });
+  }
+
+
+  function crc16(payload){
+    let crc = 0xFFFF;
+    for(let i=0;i<payload.length;i++){
+      crc ^= (payload.charCodeAt(i) << 8);
+      for(let j=0;j<8;j++){
+        crc = (crc & 0x8000) ? ((crc << 1) ^ 0x1021) & 0xFFFF : (crc << 1) & 0xFFFF;
+      }
+    }
+    return crc.toString(16).toUpperCase().padStart(4,'0');
+  }
+  function tlv(id, value){
+    const len = String(value.length).padStart(2,'0');
+    return `${id}${len}${value}`;
+  }
+  function stripAccents(str){
+    return str.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^\x20-\x7E]/g,'');
+  }
+  function buildPixPayload(amount){
+    const key = CONFIG.pixKey;
+    const name = stripAccents(CONFIG.merchantName).substring(0,25);
+    const city = stripAccents(CONFIG.merchantCity).substring(0,15);
+    const amountStr = amount.toFixed(2);
+
+    const merchantAccountInfo = tlv('00','br.gov.bcb.pix') + tlv('01', key);
+    const additionalData = tlv('05', '***');
+
+    let payload =
+      tlv('00','01') +
+      tlv('26', merchantAccountInfo) +
+      tlv('52','0000') +
+      tlv('53','986') +
+      tlv('54', amountStr) +
+      tlv('58','BR') +
+      tlv('59', name) +
+      tlv('60', city) +
+      tlv('62', additionalData) +
+      '6304';
+
+    return payload + crc16(payload);
+  }
+
+  let qrInstance = null;
+  function renderPix(){
+    const box = document.getElementById('qrcode-box');
+    box.innerHTML = "";
+    try{
+      if (typeof QRCode === 'undefined') throw new Error('QRCode lib not loaded');
+      const payload = buildPixPayload(cartTotal());
+      qrInstance = new QRCode(box, { text: payload, width: 190, height: 190, colorDark: "#1B120A", colorLight: "#ffffff" });
+    }catch(err){
+      box.innerHTML = '<p style="font-size:12.5px; color:#a32e3c; text-align:center; padding:10px;">Não foi possível carregar o QR Code agora. Tenta recarregar a página, ou finaliza pelo WhatsApp.</p>';
+      console.error('Pix QR error:', err);
+    }
+  }
