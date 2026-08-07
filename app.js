@@ -31,6 +31,7 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
       if(existing){ existing.qty += 1; }
       else{ cart.push({ key, insp, nome, size: 'kit', sizeLabel: 'Kit', unitPrice: price, qty: 1 }); }
       updateCartBadge();
+      saveCart();
       openCart();
     });
   });
@@ -351,7 +352,16 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
     document.getElementById('itemSubtotal').textContent = fmt(itemUnitPrice(currentProduct, currentSize) * currentQty);
   }
 
+  const CART_STORAGE_KEY = 'veraz_cart_v1';
   let cart = [];
+  try{
+    const savedCart = localStorage.getItem(CART_STORAGE_KEY);
+    if(savedCart) cart = JSON.parse(savedCart);
+  }catch(err){ cart = []; }
+  function saveCart(){
+    try{ localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart)); }
+    catch(err){ /* localStorage indisponível — carrinho segue funcionando só nesta página */ }
+  }
 
   function addToCartFromModal(){
     const sizeLabel = currentSize === 'frasco' ? 'Frasco 60ml' : 'Tester 5ml';
@@ -364,6 +374,7 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
       cart.push({ key, insp: currentProduct.insp, nome: currentProduct.nome, size: currentSize, sizeLabel, unitPrice, qty: currentQty });
     }
     updateCartBadge();
+    saveCart();
     document.getElementById('addCartConfirm').classList.add('show');
   }
   document.getElementById('addToCartBtn').addEventListener('click', addToCartFromModal);
@@ -510,6 +521,7 @@ if(typeof ESSENCIAS === 'undefined') var ESSENCIAS = [];
     if(btn.dataset.act === 'minus'){ cart[idx].qty--; if(cart[idx].qty <= 0) cart.splice(idx,1); }
     if(btn.dataset.act === 'remove') cart.splice(idx,1);
     updateCartBadge();
+    saveCart();
     renderCart();
   });
 
